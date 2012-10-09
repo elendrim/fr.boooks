@@ -30,7 +30,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="#">Boooks</a>
+          <a class="brand" href="#">Boooks <sup>beta</sup></a>
           <div class="nav-collapse collapse">
             <ul class="nav">
               <li class="dropdown">
@@ -63,12 +63,17 @@
     </div>
 	
 	<div class="container">
+		
+		<div class="alert">
+	  		<strong>Attention!</strong> Boooks est en version beta. 
+		</div>
+	
 	    <decorator:body />
 	    
 		<hr />
 	
 	   	<footer>
-	      	<p>&copy; Boooks 2013</p>
+	      	<p>&copy; Boooks 2012</p>
 	   	</footer>
 	
 	</div> <!-- /container -->

@@ -11,26 +11,22 @@
 </head>
 <body>
 
-	<!-- Main hero unit for a primary marketing message or call to action -->
 	<div class="hero-unit">
-		<h1>Hello, world!</h1>
-		<p>This is a template for a simple marketing or informational
-			website. It includes a large callout called the hero unit and three
-			supporting pieces of content. Use it as a starting point to create
-			something more unique.</p>
+		<h1>Revolutionnons notre façon de lire !</h1>
+		<p>Nous allons révolutionner l'écriture et la lecture. Nous mettons en contact direct le lecteur et l'auteur, sans intermédiaire pour 
+		décider qui doit être édité ou non. Vous avez écrit un ouvrage ? Ici, vous êtes un artiste que nous soutenons. Vous aimez découvrir 
+		de nouveaux talents ? Ici, vous êtes à la fois un critique, un éditeur et un lecteur écouté. Nous allons créer la plus grande 
+		libraire jamais envisagée.</p>
+		<p><strong>Bienvenue, vous êtes sur Boooks.</strong></p>
 		<p>
 			<a class="btn btn-primary btn-large">Learn more &raquo;</a>
 		</p>
 	</div>
 
-	<!-- Example row of columns -->
 	<div class="row">
 		<div class="span6">
 			<h2>Publier</h2>
-			<p>Donec id elit non mi porta gravida at eget metus. Fusce
-				dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh,
-				ut fermentum massa justo sit amet risus. Etiam porta sem malesuada
-				magna mollis euismod. Donec sed odio dui.</p>
+			<p>Vous avez écrit une nouvelle, un essai ou un roman ? Bienvenue dans votre propre maison d’édition.</p>
 			
 			<form class="form-search" action="book/add.htm" method="get">
 				<button type="submit" class="btn">Publier</button>
@@ -38,15 +34,12 @@
 			
 		</div>
 		<div class="span6">
-			<h2>Acheter</h2>
-			<p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in,
-				egestas eget quam. Vestibulum id ligula porta felis euismod semper.
-				Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum
-				nibh, ut fermentum massa justo sit amet risus.</p>
+			<h2>Découvrir</h2>
+			<p>Soif d’émotions ? Découvrez vos futurs auteurs favoris.</p>
 			<form class="form-search" action="book/list.htm">
 		    	<div class="input-append">
 		    		<input type="text" class="span2 search-query">
-		    		<button type="submit" class="btn">Search</button>
+		    		<button type="submit" class="btn">Rechercher</button>
 		    	</div>
 		    </form>
 		</div>
