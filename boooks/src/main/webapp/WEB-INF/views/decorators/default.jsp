@@ -54,7 +54,7 @@
               </li>
             </ul>
             
-           	<form class="navbar-search pull-right" action="manga/list.htm">
+           	<form class="navbar-search pull-right" action="book/list.htm">
 			    <input type="text" class="search-query" placeholder="Search">
 			</form>
           </div><!--/.nav-collapse -->
