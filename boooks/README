@@ -6,8 +6,10 @@ Add the plugins :
  - Groovy - Eclipse for Juno
 
 
-You have to Download MySql
-You have to Download Jackrabbit (standalone version).
+You have to Download :
+ - MySql
+ - Jackrabbit (standalone version).
+ - Tomcat (To dl through the eclipse "Server runtime environment")
 
 Set the view to git explorer
  - Clone a Git repository
