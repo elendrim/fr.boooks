@@ -1,3 +1,18 @@
+We recommand eclipse JEE Juno for intalling this stuff.
+
+Add the plugins :
+ - WTP - Maven
+ - EGit 
+ - Groovy - Eclipse for Juno
+
+
+You have to Download MySql
+You have to Download Jackrabbit (standalone version).
+
+Set the view to git explorer
+ - Clone a Git repository
+
+
 
 ** Run Jackrabbit
   java -jar ./jackrabbit-standalone-2.4.3.jar -p 8081
