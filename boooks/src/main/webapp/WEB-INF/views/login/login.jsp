@@ -10,8 +10,8 @@
 <head>
 	<title>Connexion</title>
 </head>
-<body onload='document.f.j_username.focus();'>
-
+<body onload="document.f.j_username.focus();">
+	
 	
 	<c:if test="${not empty error}">
 		<div class="alert">
@@ -20,7 +20,7 @@
 		</div>
 	</c:if>
  
-	 <form name="f" action="<c:url value='j_spring_security_check' />" method="POST" class="form-horizontal">
+	 <form name="f" action="j_spring_security_check" method="POST" class="form-horizontal">
 	 
 	 	<div class="modal" style="position: relative; top: auto; left: auto; margin: 0 auto 20px; z-index: 1; max-width: 100%;">
 	  		<div class="modal-header">
@@ -44,7 +44,7 @@
 		    	<div class="control-group">
 				    <div class="controls">
 				      <label class="checkbox">
-				        <input type="checkbox"> Rester connecté
+				        <input type="checkbox" name="_spring_security_remember_me"> Rester connecté
 				      </label>
 				     
 				    </div>

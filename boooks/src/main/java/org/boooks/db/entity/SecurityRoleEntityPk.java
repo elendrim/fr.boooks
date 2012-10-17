@@ -14,7 +14,7 @@ public class SecurityRoleEntityPk implements Serializable {
 	private String roleName;
     
     @Column(name="USER_ID", nullable = false)
-    private String userId;
+    private Long userId;
 
 	public String getRoleName() {
 		return roleName;
@@ -24,11 +24,11 @@ public class SecurityRoleEntityPk implements Serializable {
 		this.roleName = roleName;
 	}
 
-	public String getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 

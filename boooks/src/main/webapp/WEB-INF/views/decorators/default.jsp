@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator" %>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/page" prefix="page"  %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -52,11 +53,24 @@
                   <li><a href="#">Something else here</a></li>
                 </ul>
               </li>
-            </ul>
-            
+             </ul>
+              
+            <sec:authorize  access="isAuthenticated()"> 
+	            <ul class="nav pull-right">
+	                <li class="dropdown">
+	                  <a data-toggle="dropdown" class="dropdown-toggle" href="#"><sec:authentication property="principal.username"/> <b class="caret"></b></a>
+	                  <ul class="dropdown-menu">
+	                    <li><a href="j_spring_security_logout" >Deconnexion</a></li>
+	                  </ul>
+	                </li>
+	            </ul>
+            </sec:authorize>
            	<form class="navbar-search pull-right" action="book/list.htm">
 			    <input type="text" class="search-query" placeholder="Search">
 			</form>
+			
+			
+			
           </div><!--/.nav-collapse -->
         </div>
       </div>

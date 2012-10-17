@@ -7,18 +7,16 @@
 	http://www.springframework.org/schema/security
 	http://www.springframework.org/schema/security/spring-security-3.1.xsd">
  
-	<http auto-config="true">
-		<intercept-url pattern="/settings/*" access="ROLE_USER" />
+	<http auto-config="true" use-expressions="true" >
+		<intercept-url pattern="/*" access="permitAll" />
+		<intercept-url pattern="/book/add.htm" access="hasRole('USER')" />
+	 	<intercept-url pattern="/settings/*" access="hasRole('USER')" />
 		<form-login login-page="/login.htm" default-target-url="/index.htm" authentication-failure-url="/loginfailed.htm" />
 		<logout logout-success-url="/logout.htm" />
-		
-		<!-- <logout logout-url="/logoff-please.do"
-	          logout-success-url="/logoff.html" /> -->
-		
 	</http>
  
-	<authentication-manager>
-	  <authentication-provider  user-service-ref="userDetailsService">
+ 	<authentication-manager>
+	  <authentication-provider user-service-ref="userDetailsService">
 	  	<password-encoder hash="sha-256" />
 	  </authentication-provider>
 	</authentication-manager>
@@ -35,8 +33,7 @@
 	    </beans:list>
 	  </beans:property>
 	</beans:bean>
-
-
+ 
 	
  
 </beans:beans>
