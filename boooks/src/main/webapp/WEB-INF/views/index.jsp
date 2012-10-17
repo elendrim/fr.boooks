@@ -12,11 +12,11 @@
 <body>
 
 	<div class="hero-unit">
-		<h1>Revolutionnons notre façon de lire !</h1>
+		<h1>Révolutionnons notre façon de lire !</h1>
 		<p>Nous allons révolutionner l'écriture et la lecture. Nous mettons en contact direct le lecteur et l'auteur, sans intermédiaire pour 
 		décider qui doit être édité ou non. Vous avez écrit un ouvrage ? Ici, vous êtes un artiste que nous soutenons. Vous aimez découvrir 
 		de nouveaux talents ? Ici, vous êtes à la fois un critique, un éditeur et un lecteur écouté. Nous allons créer la plus grande 
-		libraire jamais envisagée.</p>
+		librairie jamais envisagée.</p>
 		<p><strong>Bienvenue, vous êtes sur Boooks.</strong></p>
 		<p>
 			<a class="btn btn-primary btn-large">Learn more &raquo;</a>
