@@ -11,6 +11,13 @@ You have to Download :
  - Jackrabbit (standalone version).
  - Tomcat (To dl through the eclipse "Server runtime environment")
 
+** Tomcat **
+Window -> Preference -> Server -> Runtime Environment -> Add -> Apache Tomcat v7.0 -> Download and Install
+Ajouter dans Run Configeration 
+
+
+
+
 Set the view to git explorer
  - Clone a Git repository
 
