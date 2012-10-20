@@ -22,6 +22,16 @@ Set the view to git explorer
  - Clone a Git repository
 
 
+Create a propertie =>
+ - You name/pseudo will be $name$
+ - copie the dev.propertie to $name$_dev.propertie , ajust the values in it
+ - Add a context-param in web.xml (changing the $name$)
+  <context-param>
+		 <param-name>spring.profiles.active</param-name>
+		 <param-value>$name$_dev</param-value>
+	 </context-param>
+
+
 
 ** Run Jackrabbit
   java -jar ./jackrabbit-standalone-2.4.3.jar -p 8081
