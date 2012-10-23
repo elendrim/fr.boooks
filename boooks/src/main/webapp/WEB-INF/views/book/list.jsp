@@ -22,7 +22,7 @@
 
 	
 
-	<h1>Liste des books</h1>
+	<h1>Liste des Boooks</h1>
 	<table class="table table-striped table-hover">
 		<thead>
 			<tr>
