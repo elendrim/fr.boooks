@@ -12,16 +12,22 @@ You have to Download :
  - Jackrabbit (standalone version).
  - Tomcat (To dl through the eclipse "Server runtime environment")
 
-** Tomcat **
-Window -> Preference -> Server -> Runtime Environment -> Add -> Apache Tomcat v7.0 -> Download and Install
-Ajouter dans Run Configeration 
-
-
-
-
 Set the view to git explorer
  - Clone a Git repository
 
+** Tomcat **
+Window -> Preference -> Server -> Runtime Environment -> Add -> Apache Tomcat v7.0 -> Download and Install
+Utiliser la perspective Java EE -> Run -> Run on server
+
+
+Create a propertie =>
+ - You name/pseudo will be $name$
+ - copie the dev.propertie to $name$_dev.propertie , ajust the values in it
+ - Add a context-param in web.xml (changing the $name$)
+  <context-param>
+		 <param-name>spring.profiles.active</param-name>
+		 <param-value>$name$_dev</param-value>
+	 </context-param>
 
 
 ** Run Jackrabbit
