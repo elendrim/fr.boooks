@@ -1,0 +1,10 @@
+<html>
+<body>
+	<h3>Bonjour ${user.firstname} ${user.lastname}, bienvenue sur le site boooks !</h3>
+	
+	<div>
+	   Pour activer votre compte, vous devez cliquer sur l'adresse suivante : <a href="${url}">${url}</a>.
+	</div>
+</body>
+
+</html>

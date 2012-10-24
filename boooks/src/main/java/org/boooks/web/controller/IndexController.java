@@ -12,5 +12,10 @@ public class IndexController {
 	public String index() {
 		return "index";
 	}
+	
+	@RequestMapping(value="/more", method = RequestMethod.GET)
+	public String more() {
+		return "index/more";
+	}
 
 }

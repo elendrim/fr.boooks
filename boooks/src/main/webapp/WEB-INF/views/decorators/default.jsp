@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<%@ page contentType="text/html; charset=UTF-8"%>
+<%@ page pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator" %>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/page" prefix="page"  %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"  %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -26,11 +29,7 @@
 	<div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
+          
           <a class="brand" href="#">Boooks <sup>beta</sup></a>
           <div class="nav-collapse collapse">
             <ul class="nav">
@@ -53,23 +52,41 @@
                   <li><a href="#">Something else here</a></li>
                 </ul>
               </li>
-             </ul>
-              
+            </ul>
+            
             <sec:authorize  access="isAuthenticated()"> 
 	            <ul class="nav pull-right">
 	                <li class="dropdown">
 	                  <a data-toggle="dropdown" class="dropdown-toggle" href="#"><sec:authentication property="principal.username"/> <b class="caret"></b></a>
 	                  <ul class="dropdown-menu">
-	                    <li><a href="j_spring_security_logout" >Deconnexion</a></li>
+	                    <li><a href="j_spring_security_logout" >Déconnexion</a></li>
 	                  </ul>
 	                </li>
 	            </ul>
             </sec:authorize>
+            <sec:authorize  access="isAnonymous()">
+            	<decorator:usePage id="pageDecorated" />
+            	
+            	<c:choose>
+            		<c:when test="${!empty pageDecorated && pageDecorated.properties['meta.registration'] == 1}">
+	            		<form class="navbar-form pull-right" method="get" action="user/registration.htm">
+						  <button type="submit" class="btn btn-danger" >INSCRIPTION</button>
+						</form>
+            		</c:when>
+            		<c:otherwise>
+            			<form class="navbar-form pull-right" method="get" action="login.htm">
+					  		<button type="submit" class="btn">Connexion</button>
+						</form>
+            		</c:otherwise>
+            	</c:choose>
+				
+            </sec:authorize>
+            <ul class="nav pull-right">
+               <li>&nbsp;</li>
+            </ul>
            	<form class="navbar-search pull-right" action="book/list.htm">
 			    <input type="text" class="search-query" placeholder="Search">
 			</form>
-			
-			
 			
           </div><!--/.nav-collapse -->
         </div>

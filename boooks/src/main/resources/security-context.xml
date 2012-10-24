@@ -7,20 +7,23 @@
 	http://www.springframework.org/schema/security
 	http://www.springframework.org/schema/security/spring-security-3.1.xsd">
  
-	<http auto-config="true" use-expressions="true" >
-		<intercept-url pattern="/*" access="permitAll" />
+ 	<!-- <global-method-security secured-annotations="enabled"/> -->
+ 
+ 	<http pattern="/static/**" security="none" />
+ 	
+	<http use-expressions="true" >
+		<intercept-url pattern="/views/**" access="denyAll" />
 		<intercept-url pattern="/book/add.htm" access="hasRole('USER')" />
-	 	<intercept-url pattern="/settings/*" access="hasRole('USER')" />
+	 	<intercept-url pattern="/**" access="permitAll" />
 		<form-login login-page="/login.htm" default-target-url="/index.htm" authentication-failure-url="/loginfailed.htm" />
 		<logout logout-success-url="/logout.htm" />
 	</http>
  
- 	<authentication-manager>
+ 	<authentication-manager alias="authenticationManager">
 	  <authentication-provider user-service-ref="userDetailsService">
-	  	<password-encoder hash="sha-256" />
+	  	<password-encoder hash="sha-256"  />
 	  </authentication-provider>
 	</authentication-manager>
-	
 	
 	<beans:bean id="daoAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
   		<beans:property name="userDetailsService" ref="userDetailsService"/>

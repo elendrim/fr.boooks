@@ -7,4 +7,5 @@
 	<import resource="classpath:env-context.xml" />
 	<import resource="classpath:security-context.xml" /> 
   	<import resource="classpath:spring-context.xml" />
+  	<import resource="classpath:mail-context.xml" />
 </beans>

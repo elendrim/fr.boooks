@@ -11,7 +11,9 @@
 	<context:component-scan base-package="org.boooks.web" />
 	
 	<!-- Configures the @Controller programming model -->
-	<mvc:annotation-driven />
+	<!-- JSR-303 support will be detected on classpath and enabled automatically -->
+    <mvc:annotation-driven />
+	
 	
 	
 	<!-- Configures Handler Interceptors -->	
@@ -43,6 +45,8 @@
 		  <!-- specify maximum file size in bytes actually 20Mo -->
 		  <property name="maxUploadSize" value="20000000"/>
 	</bean>
+	
+	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 		
     
     

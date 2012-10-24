@@ -8,17 +8,23 @@ import javax.jcr.RepositoryException;
 
 import org.boooks.db.entity.Book;
 import org.boooks.jcr.entity.BookData;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface IBookService {
 
+	@Transactional
 	List<Book> getAll();
 
+	@Transactional
 	Book getBookDbById(long id);
 	
+	@Transactional
 	Book save(Book book, byte[] dataBytes, String mimeType) throws RepositoryException, MalformedURLException;
 
+	@Transactional
 	Book getBookJcrById(long id) throws RepositoryException, MalformedURLException;
 
+	@Transactional
 	BookData getBookData(long id) throws RepositoryException, IOException;
 
 }

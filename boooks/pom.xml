@@ -1,12 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.dyndns.tuxgalaxy.spring</groupId>
-    <artifactId>data-jpa-tutorial-part-one</artifactId>
+    <groupId>fr.boooks</groupId>
+    <artifactId>boooks-webapp</artifactId>
     <packaging>war</packaging>
     <version>0.1</version>
-    <name>Spring Data JPA Tutorial Part One</name>
-    <description>Spring Data JPA Tutorial Part One</description>
+    <name>Boooks web application</name>
+    <description>Boooks web application frontend</description>
     <repositories>
         <repository>
             <id>repository.jboss.org-public</id>
@@ -144,6 +144,20 @@
             <artifactId>hibernate-entitymanager</artifactId>
             <version>${hibernate.version}</version>
         </dependency>
+        
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+        
+        <!-- hibernate validator -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>4.2.0.Final</version>
+        </dependency>
+        
         <!-- H2 Database -->
         <dependency>
             <groupId>com.h2database</groupId>
@@ -209,6 +223,19 @@
             <artifactId>junit</artifactId>
             <version>4.9</version>
             <scope>test</scope>
+        </dependency>
+
+		<dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.5</version>
+        </dependency>
+        
+		<!-- Velocity template engine -->
+		<dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity</artifactId>
+            <version>1.7</version>
         </dependency>
 
 	    <!-- Apache Commons Upload --> 

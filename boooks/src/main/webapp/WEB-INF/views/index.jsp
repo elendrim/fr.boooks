@@ -19,7 +19,7 @@
 		librairie jamais envisagée.</p>
 		<p><strong>Bienvenue, vous êtes sur Boooks.</strong></p>
 		<p>
-			<a class="btn btn-primary btn-large">Learn more &raquo;</a>
+			<a class="btn btn-primary btn-large" href="index/more.htm" >En savoir plus &raquo;</a>
 		</p>
 	</div>
 

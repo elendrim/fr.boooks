@@ -9,6 +9,7 @@
 <html>
 <head>
 	<title>Connexion</title>
+	<meta name="registration" content="1" >
 </head>
 <body onload="document.f.j_username.focus();">
 	
@@ -16,7 +17,8 @@
 	<c:if test="${not empty error}">
 		<div class="alert">
 		  <button type="button" class="close" data-dismiss="alert">×</button>
-		  Le nom d'utilisateur ou le mot de passe saisi est incorrect.
+		  <!-- Le nom d'utilisateur ou le mot de passe saisi est incorrect. -->
+		  ${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message}
 		</div>
 	</c:if>
  

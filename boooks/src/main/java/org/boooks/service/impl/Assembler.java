@@ -17,7 +17,7 @@ public class Assembler {
   @Transactional(readOnly = true)
   public User buildUserFromUserEntity(UserEntity userEntity) {
 
-    String username = userEntity.getName();
+    String email = userEntity.getEmail();
     String password = userEntity.getPassword();
     boolean enabled = userEntity.isActive();
     boolean accountNonExpired = userEntity.isActive();
@@ -29,7 +29,7 @@ public class Assembler {
     	authorities.add(new SimpleGrantedAuthority(role.getId().getRoleName()));
     }
 
-    User user = new User(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
+    User user = new User(email, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
     return user;
   }
 }
