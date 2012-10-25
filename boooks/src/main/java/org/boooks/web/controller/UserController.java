@@ -1,7 +1,5 @@
 package org.boooks.web.controller;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -11,14 +9,13 @@ import org.boooks.db.entity.SexEnum;
 import org.boooks.db.entity.UserEntity;
 import org.boooks.exception.BusinessException;
 import org.boooks.service.IUserService;
-import org.boooks.web.form.UserForm;
+import org.boooks.web.form.UserRegisterForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,13 +33,13 @@ public class UserController {
 	
 	@RequestMapping(value="/registration", method = RequestMethod.GET)
     public String registration(Model model) {
-		UserForm userForm = new UserForm();
+		UserRegisterForm userForm = new UserRegisterForm();
 		model.addAttribute("userForm", userForm);
         return "user/registration";
     }
 	
 	@RequestMapping(value="/registration", method = RequestMethod.POST)
-    public String registration(@Valid UserForm userForm, BindingResult result, Model model) {
+    public String registration(@Valid UserRegisterForm userForm, BindingResult result, Model model) {
 		
 		if ( result.hasErrors() ) {
 			model.addAttribute("userForm", userForm);	

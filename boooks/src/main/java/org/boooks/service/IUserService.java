@@ -14,5 +14,8 @@ public interface IUserService {
 	
 	@Transactional
 	void activate(String email, String tempkey) throws Exception;
+
+	@Transactional
+	UserEntity saveUser(UserEntity userEntity) throws BusinessException;
 	  
 }

@@ -109,6 +109,12 @@ public class UserDetailsServiceImpl implements UserDetailsService, IUserService 
 		  throw new Exception("La clé n'est pas trouvé. L'utilisateur n'a pu être activé.");
 	  }
   }
+  
+  @Override
+  @Transactional(readOnly=false)
+  public UserEntity saveUser(UserEntity userEntity) throws BusinessException  {
+	  return userDAO.save(userEntity);
+  }
 
   
 }
