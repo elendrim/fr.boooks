@@ -14,6 +14,7 @@
 	<http use-expressions="true" >
 		<intercept-url pattern="/views/**" access="denyAll" />
 		<intercept-url pattern="/book/add.htm" access="hasRole('USER')" />
+		<intercept-url pattern="/settings/**" access="hasRole('USER')" />
 	 	<intercept-url pattern="/**" access="permitAll" />
 		<form-login login-page="/login.htm" default-target-url="/index.htm" authentication-failure-url="/loginfailed.htm" />
 		<logout logout-success-url="/logout.htm" />

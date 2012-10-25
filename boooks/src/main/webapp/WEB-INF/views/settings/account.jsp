@@ -74,7 +74,7 @@
     	
     	<div class="control-group">
     		<div class="controls">
-	    		<form:button class="btn" ><i class="icon-ok"></i> Enregistrer</form:button>
+	    		<form:button class="btn btn-primary" ><i class="icon-ok icon-white"></i> Enregistrer</form:button>
     		</div>
     	</div>
     </form:form>

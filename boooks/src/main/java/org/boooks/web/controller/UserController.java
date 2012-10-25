@@ -48,7 +48,7 @@ public class UserController {
 		try {
 			
 			if ( ! userForm.getPassword().equals(userForm.getConfirmPassword()) ) {
-				throw new BusinessException("confirmPassword", "password.notequals", "Les mots de passe ne sont pas identiques");
+				throw new BusinessException("confirmPassword", "password.notequals", "Les mots de passe sont différents");
 			}
 			
 			Date birthDate = null;

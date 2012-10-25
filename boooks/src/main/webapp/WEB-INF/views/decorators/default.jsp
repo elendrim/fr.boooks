@@ -57,17 +57,16 @@
             <sec:authorize  access="isAuthenticated()"> 
 	            <ul class="nav pull-right">
 	                <li class="dropdown">
-	                	<a data-toggle="dropdown" class="dropdown-toggle" href="#"><sec:authentication property="principal.username"/> <b class="caret"></b></a>
+	                	<a data-toggle="dropdown" class="dropdown-toggle"><i class="icon-user"></i> <sec:authentication property="principal.username"/> <b class="caret"></b></a>
 	                	<ul class="dropdown-menu">
 		                  	<li class="dropdown-submenu">
 								<a tabindex="-1" >Profil</a>
 			    				<ul class="dropdown-menu">
-				    				<li>
-				      					<a href="settings/account.htm" >Compte</a>
-				      				</li>
+				    				<li><a href="settings/account.htm" >Compte</a></li>
+				    				<li><a href="settings/password.htm" >Mot de passe</a></li>
 				    			</ul>
 				    		</li>
-				    		<li><a href="j_spring_security_logout" >Déconnexion</a></li>
+				    		<li><a href="j_spring_security_logout" ><i class="icon-off"></i> Déconnexion</a></li>
 				    	</ul>
 		  			</li>
                 	

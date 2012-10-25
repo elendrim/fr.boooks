@@ -11,8 +11,10 @@ import org.boooks.db.entity.SexEnum;
 import org.boooks.db.entity.UserEntity;
 import org.boooks.exception.BusinessException;
 import org.boooks.service.IUserService;
+import org.boooks.web.form.PasswordForm;
 import org.boooks.web.form.UserAccountForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -102,12 +104,42 @@ public class SettingsController {
 			model.addAttribute("userForm", userForm);	
 			return "settings/account"; 
 		}
-		
-		
 		return "settings/account";
+	}
+	
+	@RequestMapping(value="/password", method = RequestMethod.GET)
+    public String password(Model model, Principal principal) {
+		PasswordForm passwordForm = new PasswordForm();
+		model.addAttribute("passwordForm", passwordForm);
+		return "settings/password";
+	}
+	
+	@RequestMapping(value="/password", method = RequestMethod.POST)
+    public String password(@Valid PasswordForm passwordForm, BindingResult result, Model model, Principal principal) {
+		if ( result.hasErrors() ) {
+			model.addAttribute("passwordForm", passwordForm);	
+			return "settings/password"; 
+		}
 		
-		
-		
+		UserEntity userEntity = userService.findUserByEmail(principal.getName());
+		try {
+			
+			if (! passwordForm.getPassword().equals(passwordForm.getConfirmPassword() )) {
+				throw new BusinessException("confirmPassword", "password.notequals", "Les mots de passe sont différents");
+			}
+			
+			// TODO : Remplacer new ShaPasswordEncoder par une reference @autowired spring
+			ShaPasswordEncoder shaPasswordEncoder = new ShaPasswordEncoder(256);
+			userEntity.setPassword(shaPasswordEncoder.encodePassword(passwordForm.getPassword(), null));
+			userService.saveUser(userEntity);
+			model.addAttribute("messageSuccess", "Modifications sauvegardées");	
+			model.addAttribute("passwordForm", passwordForm);	
+		} catch (BusinessException e) {
+			result.rejectValue(e.getObjectName(), e.getErrorCode(), e.getMessage());
+			model.addAttribute("passwordForm", passwordForm);	
+			return "settings/password"; 
+		}
+		return "settings/password"; 
 	}
 	
 }
