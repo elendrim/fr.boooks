@@ -17,5 +17,8 @@ public interface IUserService {
 
 	@Transactional
 	UserEntity saveUser(UserEntity userEntity) throws BusinessException;
+
+	@Transactional
+	void deleteUser(String email);
 	  
 }

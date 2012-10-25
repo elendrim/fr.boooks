@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.boooks.db.entity.SexEnum;
@@ -13,8 +14,12 @@ import org.boooks.exception.BusinessException;
 import org.boooks.service.IUserService;
 import org.boooks.web.form.PasswordForm;
 import org.boooks.web.form.UserAccountForm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,9 +29,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 @RequestMapping("settings")
 public class SettingsController {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(SettingsController.class);
 
 	@Autowired
     private IUserService userService;
+	
+	
+	@RequestMapping(value="/index", method = RequestMethod.GET)
+    public String index() {
+		return "settings/index";
+	}
 	
 	@RequestMapping(value="/account", method = RequestMethod.GET)
     public String account(Model model, Principal principal) {
@@ -141,5 +154,32 @@ public class SettingsController {
 		}
 		return "settings/password"; 
 	}
+	
+	@RequestMapping(value="/deleteAccount", method = RequestMethod.GET)
+    public String deleteAccount() {
+		return "settings/deleteAccount";
+	}
+	
+	@RequestMapping(value="/deleteAccount", method = RequestMethod.POST)
+    public String deleteAccount(Principal principal, HttpSession session) {
+		
+		// delete about the user 
+		userService.deleteUser(principal.getName());
+	        
+		// logout
+        if (session != null) {
+            LOGGER.debug("Invalidating session: " + session.getId());
+            session.invalidate();
+        }
+        
+        
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(null);
+        
+        SecurityContextHolder.clearContext();
+		
+		return "redirect:/index.htm";
+	}
+	
 	
 }

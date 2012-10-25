@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface IUserDAO extends JpaRepository<UserEntity, Long> {
 
-	@Query("from UserEntity u join fetch u.roles where u.email = :email")  
+	@Query("from UserEntity u left join fetch u.roles where u.email = :email")  
 	UserEntity findByEmail(@Param("email") String email);
 
 }

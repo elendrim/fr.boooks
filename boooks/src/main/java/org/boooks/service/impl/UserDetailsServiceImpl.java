@@ -1,5 +1,6 @@
 package org.boooks.service.impl;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.boooks.db.dao.IRoleDAO;
@@ -114,6 +115,21 @@ public class UserDetailsServiceImpl implements UserDetailsService, IUserService 
   @Transactional(readOnly=false)
   public UserEntity saveUser(UserEntity userEntity) throws BusinessException  {
 	  return userDAO.save(userEntity);
+  }
+
+  @Override
+  @Transactional(readOnly=false)
+  public void deleteUser(String email) {
+		
+	List<TempKey> tempKey = tempKeyDAO.findByEmail(email);	
+	tempKeyDAO.deleteInBatch(tempKey);
+	
+	List<SecurityRoleEntity> securityRoleEntities = roleDAO.findByEmail(email);
+	roleDAO.deleteInBatch(securityRoleEntities);
+	
+	UserEntity userEntity = userDAO.findByEmail(email);
+	userDAO.delete(userEntity);
+	
   }
 
   

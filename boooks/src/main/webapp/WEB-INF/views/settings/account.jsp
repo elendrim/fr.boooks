@@ -11,7 +11,7 @@
 </head>
 <body>
 
-	<h1>Compte</h1>
+	<h1>Informations personnelles</h1>
     
     <form:form id="modifyUser" cssClass="form-horizontal" commandName="userForm" method="POST">
     	
