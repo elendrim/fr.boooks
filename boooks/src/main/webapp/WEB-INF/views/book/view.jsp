@@ -44,7 +44,7 @@
     	
     	<div class="control-group">
     		<div class="controls">
-    			<form action="book/file/${book.id}" method="get" ><button class="btn" >Télécharger</button></form>
+    			<form action="rest/book/file/${book.id}" method="get" ><button class="btn" >Télécharger</button></form>
     		</div>
     	</div>
     	

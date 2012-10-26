@@ -92,11 +92,11 @@
 		</dependency> 
 			
 		<!-- Jackrabbit content repository --> 
-		<dependency> 
+		<!-- <dependency> 
 			<groupId>org.apache.jackrabbit</groupId> 
 			<artifactId>jackrabbit-core</artifactId> 
 			<version>2.5.1</version> 
-		</dependency> 
+		</dependency>  -->
 		
 		<dependency>
 			<groupId>org.apache.jackrabbit</groupId>
@@ -252,6 +252,12 @@
 			<version>2.4</version>
 		</dependency>
  
+ 		<!-- Jackson Json Mapper -->
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.9</version>
+		</dependency>
         
     </dependencies>
     <build>
