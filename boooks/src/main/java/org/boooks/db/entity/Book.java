@@ -32,7 +32,7 @@ public class Book {
 	@JoinColumn(name="GENRE_ID")
 	private Genre genre;
 	
-	@Column(name="RESUME")
+	@Column(name="RESUME", length = 10000)
 	private String resume;
 	
 	@Column(name="NB_PAGE")

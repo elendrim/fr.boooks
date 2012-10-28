@@ -6,8 +6,11 @@ import java.util.List;
 
 import javax.jcr.RepositoryException;
 
+import org.books.utils.BoooksDataFactory;
 import org.boooks.db.entity.Book;
+import org.boooks.db.entity.UserEntity;
 import org.boooks.jcr.entity.BookData;
+import org.fluttercode.datafactory.impl.DataFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface IBookService {
@@ -26,5 +29,9 @@ public interface IBookService {
 
 	@Transactional
 	BookData getBookData(long id) throws RepositoryException, IOException;
+	
+	@Transactional
+	Book createDummyBook(UserEntity user, BoooksDataFactory df)
+			throws Exception;
 
 }
