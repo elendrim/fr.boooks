@@ -17,37 +17,50 @@
     	<div class="control-group">
     		<label class="control-label" for="title">Titre</label>
     		<div class="controls">
-    			<form:input path="title" id="title" cssClass="span7"  />
+    			<form:input path="title" id="title" placeholder="Titre" cssClass="span7"  />
+    			<form:errors path="title" cssClass="help-inline"/>
+    		</div>
+    	</div>
+    	<div class="control-group">
+    		<label class="control-label" for="authors">Auteur</label>
+    		<div class="controls">
+    			<form:input path="author" id="author" placeholder="Auteur" cssClass="span7"  />
+    			<form:errors path="author" cssClass="help-inline"/>
     		</div>
     	</div>
     	<div class="control-group">
     		<label class="control-label" for="Type">Type</label>
     		<div class="controls">
     			<form:select path="type" items="${typeList}" itemLabel="liType" itemValue="id" cssClass="span4" />
+    			<form:errors path="type" cssClass="help-inline"/>
     		</div>
     	</div>
     	<div class="control-group">
     		<label class="control-label" for="Genre">Genre</label>
     		<div class="controls">
     			<form:select path="genre" items="${genreList}" itemLabel="liGenre" itemValue="id" cssClass="span4"/>
+    			<form:errors path="genre" cssClass="help-inline"/>
     		</div>
     	</div>
     	<div class="control-group">
     		<label class="control-label" for="Resume">Resume</label>
     		<div class="controls">
     			<form:textarea path="resume" rows="6"  cssClass="span7"/>
+    			<form:errors path="resume" cssClass="help-inline"/>
     		</div>
     	</div>
     	<div class="control-group">
     		<label class="control-label" for="NbPage">Nombre de page</label>
     		<div class="controls">
     			<form:input path="nbPage" />
+    			<form:errors path="nbPage" cssClass="help-inline"/>
     		</div>
     	</div>
     	<div class="control-group">
     		<label class="control-label" for="fileData">Fichier</label>
     		<div class="controls">
     			<form:input path="fileData" type="file"/>
+    			<form:errors path="fileData" cssClass="help-inline"/>
     		</div>
     	</div>
     	      

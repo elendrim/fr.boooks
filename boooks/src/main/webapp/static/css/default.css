@@ -1,0 +1,28 @@
+/**
+* Default css for boooks
+*/
+
+body {
+	padding-top: 60px;
+  	padding-bottom: 40px;
+}
+
+.books .book .details a.title {
+	display: block;
+	max-width: 134px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-size: 13px;
+	
+	color: #414242;
+	font-weight: bold;
+	white-space: nowrap;
+}
+
+.books .book .details a.author {
+	color: #8E8E8E;
+	font-size: 10px;
+	line-height: 1;
+	overflow: hidden;
+	text-transform: uppercase;
+}

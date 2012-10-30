@@ -18,10 +18,10 @@ public class Book {
 	
 	@Id  
     @GeneratedValue(strategy = GenerationType.AUTO)  
-	@Column(name="BOOK_ID")
+	@Column(name="BOOK_ID", nullable=false, unique=true)
 	private Long id;
 	
-	@Column(name="TITLE")
+	@Column(name="TITLE", nullable=false)
 	private String title;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
@@ -32,13 +32,17 @@ public class Book {
 	@JoinColumn(name="GENRE_ID")
 	private Genre genre;
 	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="USER_ID", nullable=false)
+	private UserEntity user;
+	
 	@Column(name="RESUME")
 	private String resume;
 	
 	@Column(name="NB_PAGE")
 	private int nbPage;
 
-	@Column(name="AUTHOR")
+	@Column(name="AUTHOR", nullable=false)
 	private String author;
 
 	@Column(name="DESCRIPTION")
@@ -47,7 +51,7 @@ public class Book {
 	@Column(name="KEYWORDS")
 	private String keywords;
 
-	@Column(name="PUBLISH_DATE")
+	@Column(name="PUBLISH_DATE", nullable=false)
 	private Date publishDate;
 
 	public String getAuthor() {
@@ -128,6 +132,14 @@ public class Book {
 
 	public void setPublishDate(Date publishDate) {
 		this.publishDate = publishDate;
+	}
+	
+	public UserEntity getUser() {
+		return user;
+	}
+
+	public void setUser(UserEntity user) {
+		this.user = user;
 	}
 
 }

@@ -21,6 +21,7 @@ import org.apache.jackrabbit.commons.JcrUtils;
 import org.boooks.db.entity.Book;
 import org.boooks.db.entity.Genre;
 import org.boooks.db.entity.Type;
+import org.boooks.db.entity.UserEntity;
 import org.boooks.jcr.dao.IBookJcrDAO;
 import org.boooks.jcr.entity.BookData;
 import org.slf4j.Logger;
@@ -71,6 +72,7 @@ public class BookJcrDao implements IBookJcrDAO {
     		// Store metadata content 
     		Node node = root.addNode("book");
     		node.setProperty("id", book.getId());
+    		node.setProperty("userId", book.getUser().getId());
     		node.setProperty("author", book.getAuthor());
     		node.setProperty("description", book.getDescription());
     		node.setProperty("keywords", book.getKeywords());
@@ -181,6 +183,11 @@ public class BookJcrDao implements IBookJcrDAO {
     		book = new Book();
     		if ( node.hasProperty("id") ) {
     			book.setId(node.getProperty("id").getLong());
+    		}
+    		if ( node.hasProperty("userId") ) {
+    			UserEntity userEntity = new UserEntity();
+    			userEntity.setId(node.getProperty("userId").getLong());
+    			book.setUser(userEntity);
     		}
     		if ( node.hasProperty("author") ) {
     			book.setAuthor(node.getProperty("author").getString());

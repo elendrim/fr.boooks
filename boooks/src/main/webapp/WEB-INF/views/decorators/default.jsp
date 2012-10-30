@@ -13,12 +13,7 @@
 	<base href="${pageContext.request.scheme}://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/" />
 	<link rel="icon" type="image/png" href="static/img/glyphicons_071_book.png" />
 	<link href="static/css/bootstrap.min.css" rel="stylesheet">
-    <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-	</style>
+    <link href="static/css/default.css" rel="stylesheet">
     <link href="static/css/bootstrap-responsive.min.css" rel="stylesheet" />
     <script src="static/js/jquery-1.8.0.min.js"></script>
 	<script src="static/js/bootstrap.min.js"></script>
@@ -37,13 +32,12 @@
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Publications <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                  <li><a href="#">Publier</a></li>
-                  <li><a href="#">Mes publications</a></li>
-                  <li><a href="#">Suivi des ventes</a></li>
-                  <li class="divider"></li>
-                  <li class="nav-header">Nav header</li>
-                  <li><a href="#">Separated link</a></li>
-                  <li><a href="#">One more separated link</a></li>
+                  <li><a href="book/add.htm">Publier</a></li>
+                  <sec:authorize  access="isAuthenticated()">
+                  	<li class="divider"></li> 
+                  	<li><a href="book/myPublications.htm">Mes publications</a></li>
+                  	<li><a href="#">Suivi des ventes</a></li>
+                  </sec:authorize>
                 </ul>
               </li>
               <li class="dropdown">

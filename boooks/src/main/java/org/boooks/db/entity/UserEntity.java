@@ -51,6 +51,8 @@ public class UserEntity {
 	@OneToMany(mappedBy="user", fetch=FetchType.LAZY)
 	private List<SecurityRoleEntity> roles;
 	
+	@OneToMany(mappedBy="user", fetch=FetchType.LAZY)
+	private List<Book> books;
 	
 	public String getPassword() {
 		return password;
@@ -122,6 +124,14 @@ public class UserEntity {
 	
 	public void setRoles(List<SecurityRoleEntity> roles) {
 		this.roles = roles;
+	}
+	
+	public List<Book> getBooks() {
+		return books;
+	}
+
+	public void setBooks(List<Book> books) {
+		this.books = books;
 	}
 
 }

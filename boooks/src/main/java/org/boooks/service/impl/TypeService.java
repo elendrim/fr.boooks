@@ -6,6 +6,7 @@ import org.boooks.db.dao.ITypeDAO;
 import org.boooks.db.entity.Type;
 import org.boooks.service.ITypeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +21,7 @@ public class TypeService implements ITypeService {
     @Override
     @Transactional(readOnly=true)
 	public List<Type> getAll() {
-		return typeDAO.findAll();
+		return typeDAO.findAll(new Sort(Sort.Direction.ASC, "liType"));
 	}
     
     @Override

@@ -2,18 +2,22 @@ package org.boooks.service;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.List;
 
 import javax.jcr.RepositoryException;
 
 import org.boooks.db.entity.Book;
 import org.boooks.jcr.entity.BookData;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface IBookService {
 
 	@Transactional
-	List<Book> getAll();
+	Page<Book> findAll(Pageable pageable);
+	
+	@Transactional
+	Page<Book> findBooks(String email, Pageable pageable) ;
 
 	@Transactional
 	Book getBookDbById(long id);

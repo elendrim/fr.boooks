@@ -9,6 +9,16 @@
 <html>
 <head>
 	<title>Book</title>
+	<style type="text/css">
+		.dl-horizontal dt {
+			white-space: normal;
+			width: 150px;
+		}
+		.dl-horizontal dd {
+			margin-left: 160px;
+		}
+		
+	</style>
 </head>
 <body>
 
@@ -31,20 +41,24 @@
 			</div>
 			
 		</div>
-		
-		<dl class="dl-horizontal">
-		  <dt>Type</dt>
-		  <dd>${book.type.liType}</dd>
-		  <dt>Genre</dt>
-		  <dd>${book.genre.liGenre}</dd>
-		  <dt>Date de publication</dt>
-		  <dd><fmt:formatDate value="${book.publishDate}" pattern="dd MMMMM yyyy HH:mm:ss"/></dd>
-		</dl>
+		<div >
+			<dl class="dl-horizontal">
+			  <dt>Auteur</dt>
+			  <dd>${book.author}</dd>
+			  <dt>Type</dt>
+			  <dd>${book.type.liType}</dd>
+			  <dt>Genre</dt>
+			  <dd>${book.genre.liGenre}</dd>
+			  <dt>Date de publication</dt>
+			  <dd><fmt:formatDate value="${book.publishDate}" pattern="dd MMMMM yyyy HH:mm:ss"/></dd>
+			</dl>
+			
+		</div>
 	    
     	
     	<div class="control-group">
     		<div class="controls">
-    			<form action="rest/book/file/${book.id}" method="get" ><button class="btn" >Télécharger</button></form>
+    			<form action="rest/book/file/${book.id}" method="get" ><button class="btn btn-success" ><i class="icon-download icon-white"></i> Télécharger</button></form>
     		</div>
     	</div>
     	

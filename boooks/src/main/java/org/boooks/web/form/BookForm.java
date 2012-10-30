@@ -1,13 +1,18 @@
 package org.boooks.web.form;
 
+import javax.validation.constraints.NotNull;
+
 import org.boooks.db.entity.Genre;
 import org.boooks.db.entity.Type;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 public class BookForm {
 	
 	private long id;
 	
+	@NotNull
+	@NotEmpty
 	private String title;
 	
 	private Type type;
@@ -15,6 +20,10 @@ public class BookForm {
 	private Genre genre;
 	
 	private String resume;
+	
+	@NotNull
+	@NotEmpty
+	private String author;
 	
 	private int nbPage;
 	
@@ -74,6 +83,14 @@ public class BookForm {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
 	}
 
 }
