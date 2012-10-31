@@ -10,10 +10,12 @@ import javax.jcr.RepositoryException;
 import javax.validation.Valid;
 
 import org.apache.commons.lang.StringUtils;
+import org.boooks.db.entity.Author;
 import org.boooks.db.entity.Book;
 import org.boooks.db.entity.Genre;
 import org.boooks.db.entity.Type;
 import org.boooks.db.entity.UserEntity;
+import org.boooks.service.IAuthorService;
 import org.boooks.service.IBookService;
 import org.boooks.service.IGenreService;
 import org.boooks.service.ITypeService;
@@ -55,6 +57,9 @@ public class BookController {
 	@Autowired
     private ITypeService typeService;
 	
+	@Autowired
+    private IAuthorService authorService;
+	
 	@ModelAttribute("genreList")
 	public List<Genre> genreList(){
 		return genreService.getAll();
@@ -71,31 +76,10 @@ public class BookController {
         dataBinder.registerCustomEditor(Type.class, new TypeEditor());
     }
 
-    
-	@RequestMapping(value="/list", method = { RequestMethod.GET, RequestMethod.POST } )
-    public String list(@RequestParam(defaultValue = "1") int p, ModelMap model ) {
-		
-		Pageable pageable = new PageRequest(p - 1, PAGE_BOOK_SIZE, Sort.Direction.ASC, "publishDate");
-        
-        Page<Book> bookPage = bookService.findAll(pageable);
-        
-        int current = bookPage.getNumber() +1 ;
-        int begin = Math.max(1, current - 3);
-        int end = Math.min(begin + 6, bookPage.getTotalPages());
-        
-        model.addAttribute("bookPage", bookPage);
-        model.addAttribute("beginIndex", begin);
-        model.addAttribute("endIndex", end);
-        model.addAttribute("currentIndex", current);
-        
-        
-        return "book/books";
-    }
-	
-	@RequestMapping(value="/view", method = RequestMethod.GET)
+    @RequestMapping(value="/view", method = RequestMethod.GET)
     public String view( @RequestParam long id, ModelMap model) throws RepositoryException, MalformedURLException {
 		
-        Book book = bookService.getBookJcrById(id);
+        Book book = bookService.getBookDbById(id);
         model.addAttribute("book", book);
         return "book/view";
 		
@@ -106,14 +90,16 @@ public class BookController {
 		
 		UserEntity user = userService.findUserByEmail(principal.getName());
 		
-		List<String> authorList = new ArrayList<String>();
-		authorList.add(user.getFirstname());
-		authorList.add(user.getLastname());
-		String author = StringUtils.join(authorList, " ");
+		List<String> authorName = new ArrayList<String>();
+		authorName.add(user.getFirstname());
+		authorName.add(user.getLastname());
+		String author = StringUtils.join(authorName, " ");
 		
+		List<String> authorList = new ArrayList<String>();
+		authorList.add(author);
 		
 		BookForm bookForm = new BookForm();
-		bookForm.setAuthor(author);
+		bookForm.setAuthors(authorList);
 		model.addAttribute("bookForm", bookForm);
         return "book/add";
     }
@@ -136,7 +122,15 @@ public class BookController {
 		book.setNbPage(bookForm.getNbPage());
 		book.setResume(bookForm.getResume());
 		book.setPublishDate(new Date());
-		book.setAuthor(bookForm.getAuthor());
+		
+		List<Author> authorList = new ArrayList<Author>();
+		for (String authorName : bookForm.getAuthors()) {
+			Author author = new Author();
+			author.setName(authorName);
+			authorList.add(author);
+		}
+		book.setAuthors(authorList);
+		
 		book.setUser(user);
 		
 		byte[] dataBytes = bookForm.getFileData().getBytes();
@@ -153,7 +147,7 @@ public class BookController {
 
 		Pageable pageable = new PageRequest(p - 1, PAGE_BOOK_SIZE, Sort.Direction.ASC, "publishDate");
         
-        Page<Book> bookPage = bookService.findBooks(principal.getName(), pageable);
+        Page<Book> bookPage = bookService.findBooks(principal.getName(), null, pageable);
         
         int current = bookPage.getNumber() +1 ;
         int begin = Math.max(1, current - 3);
@@ -164,7 +158,27 @@ public class BookController {
         model.addAttribute("endIndex", end);
         model.addAttribute("currentIndex", current);
         
-        return "book/books";
+        return "book/myPublications";
     }
+	
+	@RequestMapping(value="/search", method = RequestMethod.GET )
+    public String search(@RequestParam(defaultValue = "1") int p, @RequestParam(required=false) String author, ModelMap model, Principal principal) {
+
+		Pageable pageable = new PageRequest(p - 1, PAGE_BOOK_SIZE, Sort.Direction.ASC, "publishDate");
+        
+        Page<Book> bookPage = bookService.findBooks(null, author, pageable);
+        
+        int current = bookPage.getNumber() +1 ;
+        int begin = Math.max(1, current - 3);
+        int end = Math.min(begin + 6, bookPage.getTotalPages());
+        
+        model.addAttribute("bookPage", bookPage);
+        model.addAttribute("beginIndex", begin);
+        model.addAttribute("endIndex", end);
+        model.addAttribute("currentIndex", current);
+        
+        return "book/search";
+    }
+	
 	
 }

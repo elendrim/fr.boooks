@@ -4,7 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.jcr.Binary;
 import javax.jcr.Node;
@@ -18,6 +20,7 @@ import javax.jcr.query.QueryResult;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.commons.JcrUtils;
+import org.boooks.db.entity.Author;
 import org.boooks.db.entity.Book;
 import org.boooks.db.entity.Genre;
 import org.boooks.db.entity.Type;
@@ -64,7 +67,7 @@ public class BookJcrDao implements IBookJcrDAO {
 		try { 
     		String user = session.getUserID(); 
     		String name = repository.getDescriptor(Repository.REP_NAME_DESC); 
-    		System.out.println( "Logged in as " + user + " to a " + name + " repository.");
+    		LOGGER.debug( "Logged in as " + user + " to a " + name + " repository.");
     		
     		
     		Node root = session.getRootNode(); 
@@ -73,7 +76,6 @@ public class BookJcrDao implements IBookJcrDAO {
     		Node node = root.addNode("book");
     		node.setProperty("id", book.getId());
     		node.setProperty("userId", book.getUser().getId());
-    		node.setProperty("author", book.getAuthor());
     		node.setProperty("description", book.getDescription());
     		node.setProperty("keywords", book.getKeywords());
     		Calendar calendar = Calendar.getInstance();
@@ -81,6 +83,14 @@ public class BookJcrDao implements IBookJcrDAO {
     		node.setProperty("publishDate", calendar);
     		node.setProperty("title", book.getTitle());
     		node.setProperty("resume", book.getResume());
+    		
+    		if ( book.getAuthors() != null ) {
+    			Node authorsNode = node.addNode("authors");
+    			for (Author author :  book.getAuthors() ) {
+    				Node authorNode = authorsNode.addNode("author");
+    				authorNode.setProperty("name", author.getName());	
+				}
+    		}
     		
     		if ( book.getGenre() != null ) {
     			Node genre = node.addNode("genre");
@@ -124,7 +134,7 @@ public class BookJcrDao implements IBookJcrDAO {
     	try { 
     		String user = session.getUserID(); 
     		String name = repository.getDescriptor(Repository.REP_NAME_DESC); 
-    		System.out.println( "Logged in as " + user + " to a " + name + " repository.");
+    		LOGGER.debug( "Logged in as " + user + " to a " + name + " repository.");
     		
     		
     		// Retrieve content 
@@ -167,8 +177,8 @@ public class BookJcrDao implements IBookJcrDAO {
 		
     	try { 
     		String user = session.getUserID(); 
-    		String name = repository.getDescriptor(Repository.REP_NAME_DESC); 
-    		System.out.println( "Logged in as " + user + " to a " + name + " repository.");
+    		String repositoryname = repository.getDescriptor(Repository.REP_NAME_DESC); 
+    		LOGGER.debug( "Logged in as " + user + " to a " + repositoryname + " repository.");
     		
     		
     		// Retrieve content 
@@ -189,9 +199,6 @@ public class BookJcrDao implements IBookJcrDAO {
     			userEntity.setId(node.getProperty("userId").getLong());
     			book.setUser(userEntity);
     		}
-    		if ( node.hasProperty("author") ) {
-    			book.setAuthor(node.getProperty("author").getString());
-    		}
     		if ( node.hasProperty("description") ) {
     			book.setDescription(node.getProperty("description").getString());
     		}
@@ -207,6 +214,28 @@ public class BookJcrDao implements IBookJcrDAO {
     		if ( node.hasProperty("resume")) {
     			book.setResume(node.getProperty("resume").getString());
     		}
+    		
+    		if ( book.getAuthors() != null ) {
+    			Node authorsNode = node.addNode("authors");
+    			for (Author author :  book.getAuthors() ) {
+    				Node authorNode = authorsNode.addNode("author");
+    				authorNode.setProperty("name", author.getName());	
+				}
+    		}
+    		if ( node.hasNode("authors") ) {
+    			List<Author> authors = new ArrayList<Author>();
+    			Node authorsNode = node.getNode("authors");
+    			if ( authorsNode.hasNode("author") ) {
+    				Node authorNode = authorsNode.getNode("author");
+    				if ( authorNode.hasProperty("name") ) {
+    					String name = authorNode.getProperty("name").getString();
+    					Author author = new Author();
+    					author.setName(name);
+    					authors.add(author);
+    				}
+    			}
+    		}
+    		
     		if ( node.hasNode("genre") ) {
     			Genre genre = new Genre();
     			Node genreNode = node.getNode("genre");

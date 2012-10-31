@@ -17,7 +17,7 @@ public interface IBookService {
 	Page<Book> findAll(Pageable pageable);
 	
 	@Transactional
-	Page<Book> findBooks(String email, Pageable pageable) ;
+	Page<Book> findBooks(String email, String author, Pageable pageable) ;
 
 	@Transactional
 	Book getBookDbById(long id);
@@ -30,5 +30,8 @@ public interface IBookService {
 
 	@Transactional
 	BookData getBookData(long id) throws RepositoryException, IOException;
+
+	@Transactional
+	Page<Book> findAllBooks(Pageable pageable);
 
 }

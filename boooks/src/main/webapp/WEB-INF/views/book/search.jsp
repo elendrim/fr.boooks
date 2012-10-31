@@ -4,6 +4,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="util" uri="http://boooks.fr/functions"%>
 
 <html>
 <head>
@@ -14,7 +15,7 @@
 
 	
 
-	<h1>Liste des Boooks</h1>
+	<h1>Boooks</h1>
 	
 	<c:forEach items="${bookPage.content}" var="book" varStatus="rowCounter">
 		  
@@ -32,7 +33,9 @@
 		      			<a class="title" href="book/view.htm?id=${book.id}">${book.title}</a>
 		      		</div>
 		      		<div>
-	      				<a class="author" href="book/author.htm?id=${book.author}">${book.author}</a>
+		      			<c:forEach items="${book.authors}" var="author">
+	      					<a class="author" href="book/search.htm?author=${util:urlEncode(author.name)}">${author.name}</a>
+	      				</c:forEach>
 		      		</div>
 	      		</div>
 		    </div>
@@ -45,12 +48,30 @@
 	
 	</c:forEach>
 	
-	
-	
-	<c:url var="firstUrl" value="/book/list.htm?p=1" />
-	<c:url var="lastUrl" value="/book/list.htm?p=${bookPage.totalPages}" />
-	<c:url var="prevUrl" value="/book/list.htm?p=${currentIndex - 1}" />
-	<c:url var="nextUrl" value="/book/list.htm?p=${currentIndex + 1}" />
+	<c:url var="firstUrl" value="/book/search.htm" >
+		<c:param name="p">1</c:param>
+		<c:if test="${!empty param.author}">
+			<c:param name="author">${param.author}</c:param>
+		</c:if>
+	</c:url>
+	<c:url var="lastUrl" value="/book/search.htm" >
+		<c:param name="p">${bookPage.totalPages}</c:param>
+		<c:if test="${!empty param.author}">
+			<c:param name="author">${param.author}</c:param>
+		</c:if>
+	</c:url>
+	<c:url var="prevUrl" value="/book/search.htm" >
+		<c:param name="p">${currentIndex - 1}</c:param>
+		<c:if test="${!empty param.author}">
+			<c:param name="author">${param.author}</c:param>
+		</c:if>
+	</c:url>
+	<c:url var="nextUrl" value="/book/search.htm" >
+		<c:param name="p">${currentIndex + 1}</c:param>
+		<c:if test="${!empty param.author}">
+			<c:param name="author">${param.author}</c:param>
+		</c:if>
+	</c:url>
 	
 	<div class="pagination">
 	    <ul>
@@ -65,7 +86,12 @@
 	            </c:otherwise>
 	        </c:choose>
 	        <c:forEach var="i" begin="${beginIndex}" end="${endIndex}">
-	            <c:url var="pageUrl" value="/book/list.htm?p=${i}" />
+	            <c:url var="pageUrl" value="/book/search.htm" >
+	            	<c:param name="p">${i}</c:param>
+	            	<c:if test="${!empty param.author}">
+						<c:param name="author">${param.author}</c:param>
+					</c:if>
+	            </c:url>
 	            <c:choose>
 	                <c:when test="${i == currentIndex}">
 	                    <li class="active"><a href="${pageUrl}"><c:out value="${i}" /></a></li>

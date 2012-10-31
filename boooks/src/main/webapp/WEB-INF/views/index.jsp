@@ -36,7 +36,7 @@
 		<div class="span6">
 			<h2>Découvrir</h2>
 			<p>Soif d’émotions ? Découvrez vos futurs auteurs favoris.</p>
-			<form class="form-search" action="book/list.htm">
+			<form class="form-search" action="book/search.htm">
 		    	<div class="input-append">
 		    		<input type="text" class="span2 search-query">
 		    		<button type="submit" class="btn">Rechercher</button>

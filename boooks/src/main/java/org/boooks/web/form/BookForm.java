@@ -1,5 +1,7 @@
 package org.boooks.web.form;
 
+import java.util.List;
+
 import javax.validation.constraints.NotNull;
 
 import org.boooks.db.entity.Genre;
@@ -22,8 +24,7 @@ public class BookForm {
 	private String resume;
 	
 	@NotNull
-	@NotEmpty
-	private String author;
+	private List<String> authors;
 	
 	private int nbPage;
 	
@@ -85,12 +86,12 @@ public class BookForm {
 		this.title = title;
 	}
 	
-	public String getAuthor() {
-		return author;
+	public List<String> getAuthors() {
+		return authors;
 	}
 
-	public void setAuthor(String author) {
-		this.author = author;
+	public void setAuthors(List<String> authors) {
+		this.authors = authors;
 	}
 
 }

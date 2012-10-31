@@ -8,6 +8,52 @@
 <html>
 <head>
 	<title>Publier</title>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			 
+		    var i = $('.author').size();
+		 
+		    $('#add').click(function() {
+		        $('<div><input type="text" class="span7 author" name="authors[' + i + ']" /></div>').fadeIn('slow').appendTo('.controls-authors');
+		        i++;
+		    });
+		 
+		    $('#remove').click(function() {
+		    if(i > 1) {
+		        $('.author:last').remove();
+		        i--;
+		    }
+		    });
+		 
+		    $('#reset').click(function() {
+			    while(i > 2) {
+			        $('.author:last').remove();
+			        i--;
+			    }
+		    });
+		 
+		    // here's our click function for when the forms submitted
+		 
+		    $('.submit').click(function(){
+			 
+			    var answers = [];
+			    $.each($('.author'), function() {
+			        answers.push($(this).val());
+			    });
+			 
+			    if(answers.length == 0) {
+			        answers = "none";
+			    }  
+			 
+			    alert(answers);
+			 
+			    return false;
+		 
+		    });
+		 
+		});
+
+	</script>
 </head>
 <body>
 
@@ -22,10 +68,20 @@
     		</div>
     	</div>
     	<div class="control-group">
-    		<label class="control-label" for="authors">Auteur</label>
+    		<label class="control-label" for="authors">Auteurs / Alias</label>
     		<div class="controls">
-    			<form:input path="author" id="author" placeholder="Auteur" cssClass="span7"  />
-    			<form:errors path="author" cssClass="help-inline"/>
+	    		<div class="btn-toolbar">
+					<div class="btn-group">
+					    <a id="add" class="btn"><i class="icon-plus-sign" ></i></a>
+					    <a id="remove" class="btn"><i class="icon-minus-sign" ></i></a>
+					</div>
+				</div>
+    			<div class="controls-authors">
+    				
+    				<c:forEach items="${bookForm.authors}" var="author" varStatus="status">
+				    	<div><input type="text" name="authors[${status.index}]" class="span7 author" value="${author}"  /></div>    
+				    </c:forEach>
+    			</div>
     		</div>
     	</div>
     	<div class="control-group">

@@ -1,7 +1,9 @@
 package org.boooks.db.entity;
 
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,6 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -42,9 +46,16 @@ public class Book {
 	@Column(name="NB_PAGE")
 	private int nbPage;
 
-	@Column(name="AUTHOR", nullable=false)
-	private String author;
-
+	// TODO : Remplacer le manyToMany par un OneToMany, si on veut par exemple définir
+	// par exemple le role d'un auteur : Traducteur, Auteur, second ecrivain ..
+	@ManyToMany(fetch=FetchType.LAZY)
+	@JoinTable(
+			name = "BOOKS_AUTHORS", 
+			joinColumns = @JoinColumn(name = "BOOK_ID"), 
+			inverseJoinColumns = @JoinColumn(name = "AUTHOR_ID")
+		)
+	public List<Author> authors;
+	
 	@Column(name="DESCRIPTION")
 	private String description;
 
@@ -53,10 +64,6 @@ public class Book {
 
 	@Column(name="PUBLISH_DATE", nullable=false)
 	private Date publishDate;
-
-	public String getAuthor() {
-		return author;
-	}
 
 	public String getDescription() {
 		return description;
@@ -118,10 +125,6 @@ public class Book {
 		this.title = title;
 	}
 
-	public void setAuthor(String author) {
-		this.author = author;		
-	}
-
 	public void setDescription(String description) {
 		this.description = description;
 	}
@@ -140,6 +143,14 @@ public class Book {
 
 	public void setUser(UserEntity user) {
 		this.user = user;
+	}
+	
+	public List<Author> getAuthors() {
+		return authors;
+	}
+
+	public void setAuthors(List<Author> authors) {
+		this.authors = authors;
 	}
 
 }

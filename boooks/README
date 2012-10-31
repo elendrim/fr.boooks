@@ -19,6 +19,8 @@ Set the view to git explorer
 Window -> Preference -> Server -> Runtime Environment -> Add -> Apache Tomcat v7.0 -> Download and Install
 Utiliser la perspective Java EE -> Run -> Run on server
 
+You need to set URIEncoding="UTF-8" as an attribute in all your connectors in your Tomcat configuration server.xml. 
+
 
 Create a propertie =>
  - You name/pseudo will be $name$
