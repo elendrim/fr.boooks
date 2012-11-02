@@ -21,6 +21,15 @@ Utiliser la perspective Java EE -> Run -> Run on server
 
 You need to set URIEncoding="UTF-8" as an attribute in all your connectors in your Tomcat configuration server.xml. 
 
+Add a resource in tomcat configuration context.xml 
+
+ <Resource name="jdbc/boooks" auth="Container"       
+                         type="javax.sql.DataSource"                 
+                         maxActive="100" maxIdle="30"   
+                         maxWait="10000" username="myusername" password="mypassword"   
+                         driverClassName="com.mysql.jdbc.Driver"   
+                         url="jdbc:mysql://127.0.0.1:3306/boooks?autoReconnect=true"/>  
+
 
 Create a propertie =>
  - You name/pseudo will be $name$

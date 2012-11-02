@@ -141,7 +141,7 @@ public class SearchBookDAO {
 	} 
     
     public Page<Book> findBookByAuthor(final String author, Pageable pageable) {
-		/** search predicate **/
+		
     	Specification<Book> selectSpec = new Specification<Book>() {
 
 			@Override
