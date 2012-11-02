@@ -52,7 +52,7 @@
             <sec:authorize  access="isAuthenticated()"> 
 	            <ul class="nav pull-right">
 	                <li class="dropdown">
-	                	<a data-toggle="dropdown" class="dropdown-toggle"><i class="icon-user"></i> <sec:authentication property="principal.username"/> <b class="caret"></b></a>
+	                	<a data-toggle="dropdown" class="dropdown-toggle"><i class="icon-user"></i> <sec:authentication property="principal.firstname"/> <sec:authentication property="principal.lastname"/> <b class="caret"></b></a>
 	                	<ul class="dropdown-menu">
 		                  	<li><a href="settings/index.htm" ><i class="icon-user"></i> Profil</a></li>
 				    		<li><a href="j_spring_security_logout" ><i class="icon-off"></i> Déconnexion</a></li>

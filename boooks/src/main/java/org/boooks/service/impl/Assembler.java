@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import org.boooks.db.entity.SecurityRoleEntity;
 import org.boooks.db.entity.UserEntity;
+import org.boooks.web.security.UserBoooks;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -18,6 +19,8 @@ public class Assembler {
   public User buildUserFromUserEntity(UserEntity userEntity) {
 
     String email = userEntity.getEmail();
+    String firstname = userEntity.getFirstname();
+    String lastname = userEntity.getLastname();
     String password = userEntity.getPassword();
     boolean enabled = userEntity.isActive();
     boolean accountNonExpired = userEntity.isActive();
@@ -28,8 +31,7 @@ public class Assembler {
     for (SecurityRoleEntity role : userEntity.getRoles()) {
     	authorities.add(new SimpleGrantedAuthority(role.getId().getRoleName()));
     }
-
-    User user = new User(email, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
-    return user;
+    
+    return new UserBoooks(email, firstname, lastname, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
   }
 }

@@ -35,7 +35,7 @@ public class MailRegistrationService implements IMailRegistrationService {
 
 		MimeMessagePreparator preparator = new MimeMessagePreparator() {
 			public void prepare(MimeMessage mimeMessage) throws Exception {
-				MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
+				MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8");
 				message.setTo(user.getEmail());
 				message.setFrom("no-reply@boooks.fr"); // could be
 				message.setSubject("Activation de compte www.boooks.fr");
@@ -47,7 +47,7 @@ public class MailRegistrationService implements IMailRegistrationService {
 				model.put("user", user);
 				model.put("url", url);
 				String text = VelocityEngineUtils.mergeTemplateIntoString(
-						velocityEngine, "mail/registration-confirmation.vm",
+						velocityEngine, "mail/registration-confirmation.vm", "UTF-8",
 						model);
 				message.setText(text, true);
 			}
