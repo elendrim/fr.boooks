@@ -43,7 +43,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("book")
 public class BookController {
 	
-	private static final int PAGE_BOOK_SIZE = 24;
+	private static final int PAGE_BOOK_SIZE = 3;
 
 	@Autowired
     private IBookService bookService;
@@ -147,7 +147,7 @@ public class BookController {
 
 		Pageable pageable = new PageRequest(p - 1, PAGE_BOOK_SIZE, Sort.Direction.ASC, "publishDate");
         
-        Page<Book> bookPage = bookService.findBooks(principal.getName(), null, pageable);
+        Page<Book> bookPage = bookService.findBooksByEmail(principal.getName(), pageable);
         
         int current = bookPage.getNumber() +1 ;
         int begin = Math.max(1, current - 3);
@@ -162,11 +162,11 @@ public class BookController {
     }
 	
 	@RequestMapping(value="/search", method = RequestMethod.GET )
-    public String search(@RequestParam(defaultValue = "1") int p, @RequestParam(required=false) String author, ModelMap model, Principal principal) {
+    public String search(@RequestParam(defaultValue = "1") int p, @RequestParam(required=false) String q,  ModelMap model, Principal principal) {
 
 		Pageable pageable = new PageRequest(p - 1, PAGE_BOOK_SIZE, Sort.Direction.ASC, "publishDate");
         
-        Page<Book> bookPage = bookService.findBooks(null, author, pageable);
+        Page<Book> bookPage = bookService.findBooksByQuery(q, pageable);
         
         int current = bookPage.getNumber() +1 ;
         int begin = Math.max(1, current - 3);
@@ -178,6 +178,25 @@ public class BookController {
         model.addAttribute("currentIndex", current);
         
         return "book/search";
+    }
+	
+	@RequestMapping(value="/author", method = RequestMethod.GET )
+    public String searchByauthor(@RequestParam(defaultValue = "1") int p, @RequestParam(required=false) String author,  ModelMap model, Principal principal) {
+
+		Pageable pageable = new PageRequest(p - 1, PAGE_BOOK_SIZE, Sort.Direction.ASC, "publishDate");
+        
+        Page<Book> bookPage = bookService.findBooksByAuthor(author, pageable);
+        
+        int current = bookPage.getNumber() +1 ;
+        int begin = Math.max(1, current - 3);
+        int end = Math.min(begin + 6, bookPage.getTotalPages());
+        
+        model.addAttribute("bookPage", bookPage);
+        model.addAttribute("beginIndex", begin);
+        model.addAttribute("endIndex", end);
+        model.addAttribute("currentIndex", current);
+        
+        return "book/author";
     }
 	
 	

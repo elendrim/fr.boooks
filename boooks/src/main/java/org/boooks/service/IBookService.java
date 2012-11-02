@@ -14,12 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 public interface IBookService {
 
 	@Transactional
-	Page<Book> findAll(Pageable pageable);
-	
-	@Transactional
-	Page<Book> findBooks(String email, String author, Pageable pageable) ;
-
-	@Transactional
 	Book getBookDbById(long id);
 	
 	@Transactional
@@ -33,5 +27,14 @@ public interface IBookService {
 
 	@Transactional
 	Page<Book> findAllBooks(Pageable pageable);
+
+	@Transactional
+	Page<Book> findBooksByEmail(String email, Pageable pageable);
+
+	@Transactional
+	Page<Book> findBooksByAuthor(String author, Pageable pageable);
+
+	@Transactional
+	Page<Book> findBooksByQuery(String query, Pageable pageable);
 
 }

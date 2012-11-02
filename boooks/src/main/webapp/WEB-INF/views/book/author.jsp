@@ -9,7 +9,7 @@
 
 <html>
 <head>
-	<title>Rechercher</title>
+	<title>Recherche par Auteur</title>
 </head>
     
 <body>
@@ -18,9 +18,9 @@
 	
 	<h:bookList page="${bookPage}" />
 	
-	<c:url var="url" value="book/search.htm">
-		<c:if test="${!empty param.q}">
-			<c:param name="q">${param.q}</c:param>
+	<c:url var="url" value="book/author.htm">
+		<c:if test="${!empty param.author}">
+			<c:param name="author">${param.author}</c:param>
 		</c:if>
 	</c:url>
 	

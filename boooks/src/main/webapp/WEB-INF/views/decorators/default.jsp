@@ -82,8 +82,8 @@
             <ul class="nav pull-right">
                <li>&nbsp;</li>
             </ul>
-           	<form class="navbar-search pull-right" action="book/list.htm">
-			    <input type="text" class="search-query" placeholder="Search">
+           	<form class="navbar-search pull-right" action="book/search.htm">
+			    <input type="text" class="search-query" placeholder="Rechercher" name="q">
 			</form>
 			
           </div><!--/.nav-collapse -->

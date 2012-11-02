@@ -42,7 +42,7 @@ Chez Boooks, nous rêvons d’un mode artistique sans limite ou chacun pourrait 
 			<p>Soif d’émotions ? Découvrez vos futurs auteurs favoris.</p>
 			<form class="form-search" action="book/search.htm">
 		    	<div class="input-append">
-		    		<input type="text" class="span2 search-query">
+		    		<input type="text" class="span2 search-query" name="q">
 		    		<button type="submit" class="btn">Rechercher</button>
 		    	</div>
 		    </form>

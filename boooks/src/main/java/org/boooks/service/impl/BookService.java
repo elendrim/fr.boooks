@@ -1,17 +1,31 @@
 package org.boooks.service.impl;
 
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.jcr.RepositoryException;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Fetch;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.boooks.db.dao.IAuthorDAO;
 import org.boooks.db.dao.IBookDAO;
 import org.boooks.db.dao.imp.SearchBookDAO;
 import org.boooks.db.entity.Author;
+import org.boooks.db.entity.Author_;
 import org.boooks.db.entity.Book;
+import org.boooks.db.entity.Book_;
+import org.boooks.db.entity.UserEntity;
+import org.boooks.db.entity.UserEntity_;
 import org.boooks.jcr.dao.IBookJcrDAO;
 import org.boooks.jcr.entity.BookData;
 import org.boooks.service.IAuthorService;
@@ -20,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,13 +55,7 @@ public class BookService implements IBookService {
     @Autowired
     private IAuthorService authorService;
     
-    @Override
-    @Transactional(readOnly=true)
-	public Page<Book> findAll(Pageable pageable) {
-		return bookDAO.findAll(pageable);
-	}
-
-	@Override
+ 	@Override
 	@Transactional(readOnly=true)
 	public Book getBookDbById(long id) {
 		return bookDAO.getById(id);
@@ -87,11 +96,25 @@ public class BookService implements IBookService {
 	public BookData getBookData(long id) throws RepositoryException, IOException {
 		return bookJcrDAO.getBookData(id);
 	}
+	
+	@Override
+	@Transactional(readOnly=true)
+	public Page<Book> findBooksByQuery(String q, Pageable pageable) {
+		return findBookDAO.findBookByQuery(q, pageable);
+	}
+	
+	
+	@Override
+	@Transactional(readOnly=true)
+	public Page<Book> findBooksByAuthor(String author, Pageable pageable) {
+		return findBookDAO.findBookByAuthor(author, pageable);
+	}
 
 	@Override
 	@Transactional(readOnly=true)
-	public Page<Book> findBooks(final String email, final String author, Pageable pageable) {
-		return findBookDAO.findBook(email, author, pageable);
+	public Page<Book> findBooksByEmail(final String email, Pageable pageable) {
+		
+		return findBookDAO.findBookByEmail(email,  pageable);
 	}
 
 	@Override

@@ -46,7 +46,7 @@
 			  <dt>Auteurs</dt>
 			  <dd>
 			  	<c:forEach items="${book.authors}" var="author">
-			  		<div><a class="author" href="book/search.htm?author=${util:urlEncode(author.name)}">${author.name}</a></div>
+			  		<div><a class="author" href="book/author.htm?author=${util:urlEncode(author.name)}">${author.name}</a></div>
 			  	</c:forEach>
 			  </dd>
 			  <dt>Type</dt>

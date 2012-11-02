@@ -9,6 +9,9 @@ import javax.persistence.metamodel.StaticMetamodel;
 public class Book_ {
 	
 	public static volatile SingularAttribute<Book, UserEntity> user;
+	public static volatile SingularAttribute<Book, String> title;
 	public static volatile ListAttribute<Book, Author> authors;
+	
+	
 	
 }
