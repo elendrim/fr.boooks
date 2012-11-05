@@ -3,7 +3,6 @@ package org.boooks.db.entity;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -40,7 +39,7 @@ public class Book {
 	@JoinColumn(name="USER_ID", nullable=false)
 	private UserEntity user;
 	
-	@Column(name="RESUME")
+	@Column(name="RESUME", length = 10000)
 	private String resume;
 	
 	@Column(name="NB_PAGE")
