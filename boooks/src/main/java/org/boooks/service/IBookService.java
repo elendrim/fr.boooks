@@ -7,8 +7,8 @@ import javax.jcr.RepositoryException;
 
 import org.boooks.utils.BoooksDataFactory;
 import org.boooks.db.entity.Book;
-import org.boooks.jcr.entity.BookData;
 import org.boooks.db.entity.UserEntity;
+import org.boooks.jcr.entity.BookData;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
