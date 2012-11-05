@@ -15,7 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.books.utils.BoooksDataFactory;
+import org.boooks.utils.BoooksDataFactory;
 import org.boooks.db.dao.IRoleDAO;
 import org.boooks.db.dao.ITempKeyDAO;
 import org.boooks.db.dao.IUserDAO;

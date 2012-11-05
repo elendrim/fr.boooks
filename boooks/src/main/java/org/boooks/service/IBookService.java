@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.jcr.RepositoryException;
 
-import org.books.utils.BoooksDataFactory;
+import org.boooks.utils.BoooksDataFactory;
 import org.boooks.db.entity.Book;
 import org.boooks.db.entity.UserEntity;
 import org.boooks.jcr.entity.BookData;

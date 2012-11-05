@@ -14,7 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import org.books.utils.BoooksDataFactory;
+import org.boooks.utils.BoooksDataFactory;
 import org.boooks.db.dao.*;
 import org.boooks.db.entity.*;
 import org.boooks.jcr.dao.IBookJcrDAO;

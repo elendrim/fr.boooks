@@ -28,7 +28,7 @@
 						<table>
 							<tr>
 								<td>at <fmt:formatDate value="${mainComment.modifDate}" pattern="dd MMMMM yyyy HH:mm:ss"/></td>
-								<td>from  lastname</td>
+								<td>from ${mainComment.user.lastname}</td>
 								<td>${mainComment.title}</td>
 							</tr>
 							<tr>

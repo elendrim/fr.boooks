@@ -1,6 +1,6 @@
 package org.boooks.service;
 
-import org.books.utils.BoooksDataFactory;
+import org.boooks.utils.BoooksDataFactory;
 import org.boooks.db.entity.UserEntity;
 import org.boooks.exception.BusinessException;
 import org.fluttercode.datafactory.impl.DataFactory;
