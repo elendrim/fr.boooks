@@ -5,11 +5,14 @@ import java.net.MalformedURLException;
 
 import javax.jcr.RepositoryException;
 
+import org.boooks.utils.BoooksDataFactory;
 import org.boooks.db.entity.Book;
 import org.boooks.jcr.entity.BookData;
+import org.boooks.db.entity.UserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
+import org.fluttercode.datafactory.impl.DataFactory;
 
 public interface IBookService {
 
@@ -24,6 +27,10 @@ public interface IBookService {
 
 	@Transactional
 	BookData getBookData(long id) throws RepositoryException, IOException;
+	
+	@Transactional
+	Book createDummyBook(UserEntity user, BoooksDataFactory df)
+			throws Exception;
 
 	@Transactional
 	Page<Book> findAllBooks(Pageable pageable);

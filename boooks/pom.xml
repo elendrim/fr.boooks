@@ -58,6 +58,14 @@
             <artifactId>spring-tx</artifactId>
             <version>${spring.version}</version>
         </dependency>
+        
+        <dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-test</artifactId>
+		    <version>${spring.version}</version>
+		    <scope>test</scope>
+		</dependency>
+        
         <!-- Spring MVC -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -162,9 +170,10 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.3.160</version>
-            <scope>provided</scope>
+            <version>1.3.168</version>
+            <scope>test</scope>
         </dependency>
+        
         <!-- MySQL JDBC connector -->
         <!-- If you want to use MySQL, uncomment this dependency declation. -->
         <dependency>
@@ -215,7 +224,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.9</version>
+            <version>4.10</version>
             <scope>test</scope>
         </dependency>
 
@@ -252,7 +261,13 @@
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>1.9.9</version>
 		</dependency>
-        
+
+		<dependency>
+			<groupId>org.fluttercode.datafactory</groupId>
+			<artifactId>datafactory</artifactId>
+			<version>0.8</version>
+		</dependency>
+		
     </dependencies>
     
     
