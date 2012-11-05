@@ -4,6 +4,7 @@ package org.boooks.service.impl;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.jcr.RepositoryException;
@@ -14,20 +15,18 @@ import org.boooks.db.dao.ITypeDAO;
 import org.boooks.db.dao.imp.SearchBookDAO;
 import org.boooks.db.entity.Author;
 import org.boooks.db.entity.Book;
+import org.boooks.db.entity.Genre;
+import org.boooks.db.entity.Type;
 import org.boooks.db.entity.UserEntity;
-import org.boooks.utils.BoooksDataFactory;
 import org.boooks.jcr.dao.IBookJcrDAO;
 import org.boooks.jcr.entity.BookData;
 import org.boooks.service.IAuthorService;
 import org.boooks.service.IBookService;
-import org.boooks.service.IGenreService;
-import org.boooks.service.ITypeService;
-import org.fluttercode.datafactory.impl.DataFactory;
+import org.boooks.utils.BoooksDataFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,9 +38,10 @@ public class BookService implements IBookService {
     @Autowired 
     private IBookDAO bookDAO;
     
+
     @Autowired 
     private SearchBookDAO findBookDAO;
-    
+
     @Autowired 
     private IBookJcrDAO bookJcrDAO;
     
@@ -178,7 +178,5 @@ public class BookService implements IBookService {
 		
 		return book;
 	}
-
-	
 	
 }
