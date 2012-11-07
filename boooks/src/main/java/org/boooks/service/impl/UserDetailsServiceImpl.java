@@ -1,21 +1,8 @@
 package org.boooks.service.impl;
 
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import org.boooks.utils.BoooksDataFactory;
 import org.boooks.db.dao.IRoleDAO;
 import org.boooks.db.dao.ITempKeyDAO;
 import org.boooks.db.dao.IUserDAO;
@@ -28,7 +15,7 @@ import org.boooks.db.entity.UserEntity;
 import org.boooks.exception.BusinessException;
 import org.boooks.service.IMailRegistrationService;
 import org.boooks.service.IUserService;
-import org.fluttercode.datafactory.impl.DataFactory;
+import org.boooks.utils.BoooksDataFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;

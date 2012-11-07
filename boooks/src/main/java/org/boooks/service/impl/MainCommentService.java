@@ -1,21 +1,15 @@
 package org.boooks.service.impl;
 
-import java.net.MalformedURLException;
 import java.util.Date;
 import java.util.List;
 
-import javax.jcr.RepositoryException;
-
-import org.boooks.utils.BoooksDataFactory;
 import org.boooks.db.dao.IBookDAO;
 import org.boooks.db.dao.IMainCommentDAO;
 import org.boooks.db.entity.Book;
-import org.boooks.db.entity.Genre;
 import org.boooks.db.entity.MainComment;
-import org.boooks.db.entity.Type;
 import org.boooks.db.entity.UserEntity;
 import org.boooks.service.IMainCommentService;
-import org.fluttercode.datafactory.impl.DataFactory;
+import org.boooks.utils.BoooksDataFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

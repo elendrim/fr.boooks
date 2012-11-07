@@ -1,37 +1,5 @@
 package org.boooks.web.controller;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.util.Date;
-import java.util.List;
-
-import javax.jcr.RepositoryException;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.io.IOUtils;
-import org.boooks.db.entity.Book;
-import org.boooks.db.entity.Genre;
-import org.boooks.db.entity.Type;
-import org.boooks.jcr.entity.BookData;
-import org.boooks.service.IBookService;
-import org.boooks.service.IGenreService;
-import org.boooks.service.ITypeService;
-import org.boooks.web.form.BookForm;
-import org.boooks.web.propertyeditor.GenreEditor;
-import org.boooks.web.propertyeditor.TypeEditor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.boooks.db.dao.IMainCommentDAO;
 import org.boooks.service.IBookService;
 import org.boooks.service.IMainCommentService;

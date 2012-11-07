@@ -1,32 +1,16 @@
 package org.boooks.web.controller;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-
-import javax.validation.Valid;
-
-import org.boooks.utils.BoooksDataFactory;
 import org.boooks.db.entity.Book;
-import org.boooks.db.entity.SexEnum;
 import org.boooks.db.entity.UserEntity;
-import org.boooks.exception.BusinessException;
 import org.boooks.service.IBookService;
 import org.boooks.service.IMainCommentService;
 import org.boooks.service.IUserService;
-import org.boooks.service.impl.BookService;
-import org.boooks.web.form.UserRegisterForm;
-import org.fluttercode.datafactory.impl.DataFactory;
+import org.boooks.utils.BoooksDataFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("fill")

@@ -43,7 +43,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("book")
 public class BookController {
 	
-	private static final int PAGE_BOOK_SIZE = 3;
+	private static final int PAGE_BOOK_SIZE = 24;
 
 	@Autowired
     private IBookService bookService;
