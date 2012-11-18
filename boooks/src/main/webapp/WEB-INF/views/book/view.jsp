@@ -62,7 +62,15 @@
     	
     	<div class="control-group">
     		<div class="controls">
-    			<form action="rest/book/file/${book.id}" method="get" ><button class="btn btn-success" ><i class="icon-download icon-white"></i> Télécharger</button></form>
+    			<c:if test="${fn:contains(booksMimeTypeList,'PDF')}">
+    				<form action="rest/book/file/${book.id}/PDF" method="get" ><button class="btn btn-success" ><i class="icon-download icon-white"></i> Télécharger au format PDF</button></form>
+   				</c:if>
+   				<c:if test="${fn:contains(booksMimeTypeList,'EPUB')}">
+    				<form action="rest/book/file/${book.id}/EPUB" method="get" ><button class="btn btn-success" ><i class="icon-download icon-white"></i> Télécharger au format EPUB</button></form>
+    			</c:if>
+    			<c:if test="${fn:contains(booksMimeTypeList,'TEXT')}">
+    				<form action="rest/book/file/${book.id}/TEXT" method="get" ><button class="btn btn-success" ><i class="icon-download icon-white"></i> Télécharger au format TEXT</button></form>
+    			</c:if>
     		</div>
     	</div>
     	

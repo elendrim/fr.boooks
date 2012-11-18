@@ -113,12 +113,34 @@
     		</div>
     	</div>
     	<div class="control-group">
-    		<label class="control-label" for="fileData">Fichier</label>
+    		<label class="control-label" for="fileData">Fichier PDF</label>
     		<div class="controls">
-    			<form:input path="fileData" type="file"/>
-    			<form:errors path="fileData" cssClass="help-inline"/>
+    			<form:input path="filePdf" type="file"/>
+    			<form:errors path="filePdf" cssClass="help-inline"/>
     		</div>
     	</div>
+    	<div class="control-group">
+    		<label class="control-label" for="fileData">Fichier E-Pub</label>
+    		<div class="controls">
+    			<form:input path="fileEpub" type="file"/>
+    			<form:errors path="fileEpub" cssClass="help-inline"/>
+    		</div>
+    	</div>
+    	<div class="control-group">
+    		<label class="control-label" for="fileData">Fichier Texte</label>
+    		<div class="controls">
+    			<form:input path="fileText" type="file"/>
+    			<form:errors path="fileText" cssClass="help-inline"/>
+    		</div>
+    	</div>
+    	
+    	<%-- <div class="control-group">
+    		<label class="control-label" for="fileCover">Couverture</label>
+    		<div class="controls">
+    			<form:input path="fileCover" type="file"/>
+    			<form:errors path="fileCover" cssClass="help-inline"/>
+    		</div>
+    	</div> --%>
     	      
                     
     	

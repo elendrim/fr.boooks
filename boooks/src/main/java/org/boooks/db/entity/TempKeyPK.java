@@ -8,6 +8,8 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class TempKeyPK implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
+
 	@Column(name="EMAIL", nullable=false)
 	private String email;
 	

@@ -1,5 +1,6 @@
 package org.boooks.db.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class Book {
 			joinColumns = @JoinColumn(name = "BOOK_ID"), 
 			inverseJoinColumns = @JoinColumn(name = "AUTHOR_ID")
 		)
-	public List<Author> authors;
+	public List<Author> authors = new ArrayList<Author>();
 	
 	@Column(name="DESCRIPTION")
 	private String description;

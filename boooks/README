@@ -23,12 +23,23 @@ You need to set URIEncoding="UTF-8" as an attribute in all your connectors in yo
 
 Add a resource in tomcat configuration context.xml 
 
- <Resource name="jdbc/boooks" auth="Container"       
-                         type="javax.sql.DataSource"                 
-                         maxActive="100" maxIdle="30"   
-                         maxWait="10000" username="myusername" password="mypassword"   
-                         driverClassName="com.mysql.jdbc.Driver"   
-                         url="jdbc:mysql://127.0.0.1:3306/boooks?autoReconnect=true"/>  
+ <Resource 
+    	name="jdbc/boooks" 
+    	auth="Container"       
+        type="javax.sql.DataSource"
+        username="myusername" 
+		password="mypassword"   
+		driverClassName="com.mysql.jdbc.Driver"   
+		url="jdbc:mysql://127.0.0.1:3306/boooks"
+        initialSize="10"                  
+		maxActive="100"
+		minIdle="0" 
+		maxIdle="30"   
+		maxWait="10000"
+		validationQuery="SELECT 1"
+		testOnBorrow="true"
+		testOnReturn="false"
+		testWhileIdle="false"/>                           
 
 
 Create a propertie =>
@@ -43,3 +54,47 @@ Create a propertie =>
 
 ** Run Jackrabbit
   java -jar ./jackrabbit-standalone-2.4.3.jar -p 8081
+  
+== INSTALL ON PRODUCTION ==
+
+= Connect to the server = 
+ssh -v -i SpringGalaxy.pem ec2-user@ec2-IP.compute-1.amazonaws.com
+
+= Install mysql-jdbc = 
+sudo yum install mysql-connector-java
+cd /usr/share/tomcat7/lib
+sudo ln -s /usr/share/java/mysql-connector-java.jar mysql-connector-java.jar 
+
+= context.xml = 
+cd /usr/share/tomcat7/conf/
+sudo nano context.xml 
+
+<Resource name="jdbc/boooks"
+              auth="Container"
+              type="javax.sql.DataSource"
+              factory="org.apache.commons.dbcp.BasicDataSourceFactory"
+              testWhileIdle="true"
+              testOnBorrow="true"
+              testOnReturn="false"
+              validationQuery="SELECT 1"
+              validationInterval="30000"
+              timeBetweenEvictionRunsMillis="30000"
+              maxActive="100"
+              minIdle="10"
+              maxWait="10000"
+              initialSize="10"
+              removeAbandonedTimeout="60"
+              removeAbandoned="true"
+              logAbandoned="true"
+              minEvictableIdleTimeMillis="30000"
+              jmxEnabled="false"
+              username="myusername"
+              password="mypassword"
+              driverClassName="com.mysql.jdbc.Driver"
+              url="jdbc:mysql://url:3306/database"/>
+
+= server.xml =
+cd /usr/share/tomcat7/conf/
+sudo nano context.xml 
+URIEncoding="UTF-8" >> a ajouté sur tous les connecteurs
+

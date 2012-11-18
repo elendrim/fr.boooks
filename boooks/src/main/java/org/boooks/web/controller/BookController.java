@@ -1,20 +1,25 @@
 package org.boooks.web.controller;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.jcr.RepositoryException;
 import javax.validation.Valid;
 
 import org.apache.commons.lang.StringUtils;
+import org.boooks.db.common.BooksMimeType;
 import org.boooks.db.entity.Author;
 import org.boooks.db.entity.Book;
 import org.boooks.db.entity.Genre;
 import org.boooks.db.entity.Type;
 import org.boooks.db.entity.UserEntity;
+import org.boooks.jcr.entity.BookData;
 import org.boooks.service.IAuthorService;
 import org.boooks.service.IBookService;
 import org.boooks.service.IGenreService;
@@ -37,6 +42,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 
 @Controller
@@ -77,10 +83,14 @@ public class BookController {
     }
 
     @RequestMapping(value="/view", method = RequestMethod.GET)
-    public String view( @RequestParam long id, ModelMap model) throws RepositoryException, MalformedURLException {
+    public String view( @RequestParam long id, ModelMap model) throws RepositoryException, MalformedURLException, IOException {
 		
         Book book = bookService.getBookDbById(id);
         model.addAttribute("book", book);
+        
+        List<BooksMimeType> booksMimeTypeList = bookService.getBookMimeType(id);
+        model.addAttribute("booksMimeTypeList", booksMimeTypeList);
+        
         return "book/view";
 		
     }
@@ -133,10 +143,44 @@ public class BookController {
 		
 		book.setUser(user);
 		
-		byte[] dataBytes = bookForm.getFileData().getBytes();
-		String contentType = bookForm.getFileData().getContentType();
 		
-		Book savedBook = bookService.save(book, dataBytes, contentType);
+		Map<BooksMimeType, BookData> booksMap = new HashMap<BooksMimeType, BookData>();
+		if ( bookForm.getFilePdf() != null ) {
+			CommonsMultipartFile file = bookForm.getFilePdf();
+			BookData bookData = new BookData();
+			bookData.setBytes(file.getBytes());
+//			bookData.setMimeType(file.getContentType());
+			// override the file mime type, to owers
+			bookData.setMimeType(BooksMimeType.PDF.getMimeType());
+			bookData.setFilename(file.getOriginalFilename());
+			bookData.setTitle(bookForm.getTitle());
+			booksMap.put(BooksMimeType.PDF, bookData);
+		}
+		if ( bookForm.getFileEpub() != null ) {
+			CommonsMultipartFile file = bookForm.getFileEpub();
+			BookData bookData = new BookData();
+			bookData.setBytes(file.getBytes());
+//			bookData.setMimeType(file.getContentType());
+			// override the file mime type, to owers
+			bookData.setMimeType(BooksMimeType.EPUB.getMimeType());
+			bookData.setFilename(file.getOriginalFilename());
+			bookData.setTitle(bookForm.getTitle());
+			booksMap.put(BooksMimeType.EPUB, bookData);
+		}
+		if ( bookForm.getFileText() != null ) {
+			CommonsMultipartFile file = bookForm.getFileText();
+			BookData bookData = new BookData();
+			bookData.setBytes(file.getBytes());
+//			bookData.setMimeType(file.getContentType());
+			// override the file mime type, to owers
+			bookData.setMimeType(BooksMimeType.TEXT.getMimeType());
+			bookData.setFilename(file.getOriginalFilename());
+			bookData.setTitle(bookForm.getTitle());
+			booksMap.put(BooksMimeType.TEXT, bookData);
+		}
+		
+		
+		Book savedBook = bookService.save(book, booksMap);
 		
 		model.addAttribute("id", savedBook.getId());
         return "redirect:/book/view.htm";

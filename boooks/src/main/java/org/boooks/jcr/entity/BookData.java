@@ -2,10 +2,17 @@ package org.boooks.jcr.entity;
 
 public class BookData {
 	
+	private String title;
 	private String filename;
 	private String mimeType;
 	private byte[] bytes;
 	
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
 	public String getMimeType() {
 		return mimeType;
 	}

@@ -28,14 +28,44 @@ public class BookForm {
 	
 	private int nbPage;
 	
-	private CommonsMultipartFile fileData;
+	private CommonsMultipartFile filePdf;
+	
+	private CommonsMultipartFile fileEpub;
+	
+	private CommonsMultipartFile fileText;
+	
+	private CommonsMultipartFile fileCover;
 
-	public CommonsMultipartFile getFileData() {
-		return fileData;
+	public CommonsMultipartFile getFilePdf() {
+		return filePdf;
 	}
 
-	public void setFileData(CommonsMultipartFile fileData) {
-		this.fileData = fileData;
+	public void setFilePdf(CommonsMultipartFile filePdf) {
+		this.filePdf = filePdf;
+	}
+
+	public CommonsMultipartFile getFileEpub() {
+		return fileEpub;
+	}
+
+	public void setFileEpub(CommonsMultipartFile fileEpub) {
+		this.fileEpub = fileEpub;
+	}
+	
+	public CommonsMultipartFile getFileText() {
+		return fileText;
+	}
+
+	public void setFileText(CommonsMultipartFile fileText) {
+		this.fileText = fileText;
+	}
+
+	public CommonsMultipartFile getFileCover() {
+		return fileCover;
+	}
+
+	public void setFileCover(CommonsMultipartFile fileCover) {
+		this.fileCover = fileCover;
 	}
 
 	public Type getType() {

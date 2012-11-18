@@ -7,6 +7,12 @@ body {
   	padding-bottom: 40px;
 }
 
+.dl-horizontal > dd:after {
+  display: table;
+  content: "";
+  clear: both;
+}
+
 .books .book .details a.title {
 	display: block;
 	max-width: 134px;

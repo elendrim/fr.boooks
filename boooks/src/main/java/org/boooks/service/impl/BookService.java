@@ -5,10 +5,13 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.jcr.RepositoryException;
 
+import org.boooks.db.common.BooksMimeType;
 import org.boooks.db.dao.IBookDAO;
 import org.boooks.db.dao.IGenreDAO;
 import org.boooks.db.dao.ITypeDAO;
@@ -63,7 +66,7 @@ public class BookService implements IBookService {
 	
 	@Override
 	@Transactional(readOnly=false, rollbackFor={RepositoryException.class, MalformedURLException.class})
-	public Book save(Book book, byte[] dataBytes, String mimeType) throws RepositoryException, MalformedURLException {
+	public Book save(Book book, Map<BooksMimeType, BookData> booksMap) throws RepositoryException, MalformedURLException {
 		
 		/** save authors **/
 		List<Author> authors = new ArrayList<Author>();
@@ -80,7 +83,7 @@ public class BookService implements IBookService {
 		book = bookDAO.save(book);
 		
 		/** save the book into JCR **/
-		book = bookJcrDAO.createOrUpdate(book, dataBytes, mimeType);
+		book = bookJcrDAO.createOrUpdate(book, booksMap);
 		
 		return book; 
 	}
@@ -93,8 +96,8 @@ public class BookService implements IBookService {
 	
 	@Override
 	@Transactional(readOnly=true)
-	public BookData getBookData(long id) throws RepositoryException, IOException {
-		return bookJcrDAO.getBookData(id);
+	public BookData getBookData(long id, String mimeType) throws RepositoryException, IOException {
+		return bookJcrDAO.getBookData(id, mimeType);
 	}
 	
 	@Override
@@ -169,14 +172,28 @@ public class BookService implements IBookService {
 		book.setResume(df.df.getRandomText(100, 3000));
 		book.setPublishDate(new Date());
 		book.setPublishDate(df.df.getDate(new Date(), -1000, 0));
+		book.setUser(user);
 		
 		
 		byte[] dataBytes = df.df.getRandomText(df.df.getNumberBetween(200, 1000) * book.getNbPage()).getBytes();
-		String contentType = "text/plain";
 		
-		book = this.save(book, dataBytes, contentType);
+		
+		Map<BooksMimeType, BookData> bookDataList = new HashMap<BooksMimeType, BookData>();
+		BookData bookData = new BookData();
+		bookData.setBytes(dataBytes);
+		bookData.setFilename("filename");
+		bookData.setMimeType(BooksMimeType.TEXT.getMimeType());
+		bookData.setTitle(book.getTitle());
+		bookDataList.put(BooksMimeType.TEXT, bookData);
+		
+		book = this.save(book, bookDataList);
 		
 		return book;
+	}
+
+	@Override
+	public List<BooksMimeType> getBookMimeType(long id) throws RepositoryException, IOException {
+		return bookJcrDAO.getBookMimeType(id);
 	}
 	
 }

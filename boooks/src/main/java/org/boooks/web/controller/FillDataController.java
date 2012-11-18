@@ -30,7 +30,7 @@ public class FillDataController {
 		
 		BoooksDataFactory df = new BoooksDataFactory();
 		
-		int size = 1000;
+		int size = 20;
 		
 		try {
 
@@ -46,7 +46,7 @@ public class FillDataController {
 					//which have between 1 and 10 books
 					int nbBooks = df.df.getNumberBetween(1, 10);
 					System.out.println("adding "+nbBooks + " books");
-					for(int nb = 0; i< nbBooks; i++){
+					for(int nb = 0; nb< nbBooks; nb++){
 						Book book = bookService.createDummyBook(user, df);
 						
 						mainCommentService.createDummyMainComment(user, book, df);
