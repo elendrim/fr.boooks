@@ -23,6 +23,7 @@ import org.boooks.db.entity.Type;
 import org.boooks.db.entity.UserEntity;
 import org.boooks.jcr.dao.IBookJcrDAO;
 import org.boooks.jcr.entity.BookData;
+import org.boooks.jcr.entity.FileData;
 import org.boooks.service.IAuthorService;
 import org.boooks.service.IBookService;
 import org.boooks.utils.BoooksDataFactory;
@@ -66,7 +67,7 @@ public class BookService implements IBookService {
 	
 	@Override
 	@Transactional(readOnly=false, rollbackFor={RepositoryException.class, MalformedURLException.class})
-	public Book save(Book book, Map<BooksMimeType, BookData> booksMap) throws RepositoryException, MalformedURLException {
+	public Book save(Book book, Map<BooksMimeType, BookData> booksMap, FileData cover) throws RepositoryException, MalformedURLException {
 		
 		/** save authors **/
 		List<Author> authors = new ArrayList<Author>();
@@ -83,7 +84,7 @@ public class BookService implements IBookService {
 		book = bookDAO.save(book);
 		
 		/** save the book into JCR **/
-		book = bookJcrDAO.createOrUpdate(book, booksMap);
+		book = bookJcrDAO.createOrUpdate(book, booksMap, cover);
 		
 		return book; 
 	}
@@ -98,6 +99,12 @@ public class BookService implements IBookService {
 	@Transactional(readOnly=true)
 	public BookData getBookData(long id, String mimeType) throws RepositoryException, IOException {
 		return bookJcrDAO.getBookData(id, mimeType);
+	}
+	
+	@Override
+	@Transactional(readOnly=true)
+	public FileData getCoverData(long id) throws RepositoryException, IOException {
+		return bookJcrDAO.getCoverData(id);
 	}
 	
 	@Override
@@ -186,7 +193,7 @@ public class BookService implements IBookService {
 		bookData.setTitle(book.getTitle());
 		bookDataList.put(BooksMimeType.TEXT, bookData);
 		
-		book = this.save(book, bookDataList);
+		book = this.save(book, bookDataList, null);
 		
 		return book;
 	}

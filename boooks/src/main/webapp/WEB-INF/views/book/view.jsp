@@ -17,17 +17,20 @@
 		.dl-horizontal dd {
 			margin-left: 160px;
 		}
-		
+				
 	</style>
 </head>
 <body>
 
-		<div class="container-fluid">
+	<div class="container-fluid">
 		<div class="row-fluid">
 			<div class="span2">
 				<!--Sidebar content-->
 
-				<img src="static/img/tango/Office-book.svg" width="200" />
+				<!-- <img src="static/img/tango/Office-book.svg" width="200" /> -->
+				<div class="thumbnail">
+					<img src="rest/book/cover/${book.id}?w=160" onerror="this.src='static/img/tango/Office-book.svg';" width="160" alt="cover">
+				</div>
 
 			</div>
 			<div class="span10">

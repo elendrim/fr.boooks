@@ -20,6 +20,7 @@ import org.boooks.db.entity.Genre;
 import org.boooks.db.entity.Type;
 import org.boooks.db.entity.UserEntity;
 import org.boooks.jcr.entity.BookData;
+import org.boooks.jcr.entity.FileData;
 import org.boooks.service.IAuthorService;
 import org.boooks.service.IBookService;
 import org.boooks.service.IGenreService;
@@ -145,7 +146,7 @@ public class BookController {
 		
 		
 		Map<BooksMimeType, BookData> booksMap = new HashMap<BooksMimeType, BookData>();
-		if ( bookForm.getFilePdf() != null ) {
+		if ( bookForm.getFilePdf() != null && !bookForm.getFilePdf().isEmpty() ) {
 			CommonsMultipartFile file = bookForm.getFilePdf();
 			BookData bookData = new BookData();
 			bookData.setBytes(file.getBytes());
@@ -156,7 +157,7 @@ public class BookController {
 			bookData.setTitle(bookForm.getTitle());
 			booksMap.put(BooksMimeType.PDF, bookData);
 		}
-		if ( bookForm.getFileEpub() != null ) {
+		if ( bookForm.getFileEpub() != null && !bookForm.getFileEpub().isEmpty() ) {
 			CommonsMultipartFile file = bookForm.getFileEpub();
 			BookData bookData = new BookData();
 			bookData.setBytes(file.getBytes());
@@ -167,7 +168,7 @@ public class BookController {
 			bookData.setTitle(bookForm.getTitle());
 			booksMap.put(BooksMimeType.EPUB, bookData);
 		}
-		if ( bookForm.getFileText() != null ) {
+		if ( bookForm.getFileText() != null && !bookForm.getFileText().isEmpty() ) {
 			CommonsMultipartFile file = bookForm.getFileText();
 			BookData bookData = new BookData();
 			bookData.setBytes(file.getBytes());
@@ -178,9 +179,17 @@ public class BookController {
 			bookData.setTitle(bookForm.getTitle());
 			booksMap.put(BooksMimeType.TEXT, bookData);
 		}
+		FileData coverData = null;
+		if ( bookForm.getFileCover() != null && !bookForm.getFileCover().isEmpty() ) {
+			CommonsMultipartFile file = bookForm.getFileCover();
+			coverData = new FileData();
+			coverData.setBytes(file.getBytes());
+			coverData.setMimeType(file.getContentType());
+			coverData.setFilename(file.getOriginalFilename());
+		}
 		
 		
-		Book savedBook = bookService.save(book, booksMap);
+		Book savedBook = bookService.save(book, booksMap, coverData);
 		
 		model.addAttribute("id", savedBook.getId());
         return "redirect:/book/view.htm";

@@ -31,6 +31,7 @@ import org.boooks.db.entity.Type;
 import org.boooks.db.entity.UserEntity;
 import org.boooks.jcr.dao.IBookJcrDAO;
 import org.boooks.jcr.entity.BookData;
+import org.boooks.jcr.entity.FileData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -66,7 +67,7 @@ public class BookJcrDao implements IBookJcrDAO {
 	private  String jcrUrl;
 	
 	@Override
-	public Book createOrUpdate(Book book, Map<BooksMimeType, BookData> booksMap) throws RepositoryException, MalformedURLException {
+	public Book createOrUpdate(Book book, Map<BooksMimeType, BookData> booksMap, FileData cover) throws RepositoryException, MalformedURLException {
 		
 		Repository repository = JcrUtils.getRepository(jcrUrl); 
 		Session session = repository.login( new SimpleCredentials("admin", "admin".toCharArray()));
@@ -119,7 +120,20 @@ public class BookJcrDao implements IBookJcrDAO {
         		Binary binary = session.getValueFactory().createBinary(inputStream);
         		content.setProperty("jcr:data",binary);
         		content.setProperty("jcr:mimeType", entrySet.getKey().getMimeType());
+        		content.setProperty("jcr:lastModified", Calendar.getInstance());
 			}
+    		
+    		if ( cover != null ) {
+    			Node coverNode = node.addNode("cover");
+    			Node file = coverNode.addNode(cover.getFilename(),"nt:file");
+        		Node content = file.addNode("jcr:content","nt:resource");
+        		inputStream = new ByteArrayInputStream(cover.getBytes());
+        		Binary binary = session.getValueFactory().createBinary(inputStream);
+        		content.setProperty("jcr:data",binary);
+        		content.setProperty("jcr:mimeType", cover.getMimeType());
+        		content.setProperty("jcr:lastModified", Calendar.getInstance());
+    		}
+    		
     		
     		
     		session.save(); 
@@ -155,6 +169,8 @@ public class BookJcrDao implements IBookJcrDAO {
     		expression.append("inner join [nt:resource] as content on ischildnode(content, file) ");
     		expression.append("where  book.id = "+ bookId + " ");
     		expression.append("and content.[jcr:mimeType] = '"+ mimeType +"' ");
+    		expression.append("and ischildnode (book, [/]) ");
+    		expression.append("and name(book) = 'book' ");
     		
     		QueryManager queryMgr = session.getWorkspace().getQueryManager();
 			Query query = queryMgr.createQuery(expression.toString(),Query.JCR_SQL2);
@@ -193,7 +209,62 @@ public class BookJcrDao implements IBookJcrDAO {
 		}
     	
     	return bookData;
+	}
+	
+	
+	@Override
+	public FileData getCoverData(long bookId) throws RepositoryException, IOException {
 		
+		Repository repository = JcrUtils.getRepository(jcrUrl); 
+		Session session = repository.login( new SimpleCredentials("admin", "admin".toCharArray()));
+		
+		InputStream inputStream = null;
+		FileData fileData = null;
+		Binary bin = null;
+    	try { 
+    		String user = session.getUserID(); 
+    		String name = repository.getDescriptor(Repository.REP_NAME_DESC); 
+    		LOGGER.debug( "Logged in as " + user + " to a " + name + " repository.");
+    		
+    		StringBuilder expression = new StringBuilder();
+    		expression.append("select file.* from [nt:file] as file ");
+    		expression.append("inner join [nt:unstructured] as cover on ischildnode(file, cover) ");
+    		expression.append("inner join [nt:unstructured] as book on ischildnode(cover, book) ");
+    		expression.append("inner join [nt:resource] as content on ischildnode(content, file) ");
+    		expression.append("where  book.id = "+ bookId + " ");
+    		expression.append("and ischildnode (book, [/]) ");
+    		expression.append("and name(cover) = 'cover' ");
+    		expression.append("and name(book) = 'book' ");
+    		
+    		QueryManager queryMgr = session.getWorkspace().getQueryManager();
+			Query query = queryMgr.createQuery(expression.toString(),Query.JCR_SQL2);
+			QueryResult result = query.execute();
+			RowIterator rowIterator = result.getRows();
+			if ( rowIterator.hasNext() ) {
+				Node file = rowIterator.nextRow().getNode("file");
+				
+				Node content = file.getNode("jcr:content");
+				String contentMimeType = content.getProperty("jcr:mimeType").getString();
+				bin = content.getProperty("jcr:data").getBinary();
+		        inputStream = bin.getStream();
+		        byte[] bytes = IOUtils.toByteArray(inputStream);
+		        fileData = new BookData();
+		        fileData.setFilename(file.getName());
+		        fileData.setBytes(bytes);
+		        fileData.setMimeType(contentMimeType);
+		        
+			}
+    	} catch ( Exception e) {
+    		LOGGER.error("Error during download file", e);
+    	} finally { 
+    		IOUtils.closeQuietly(inputStream);
+    		if ( bin != null ) {
+    			bin.dispose();
+    		}
+    		session.logout(); 
+		}
+    	
+    	return fileData;
 	}
 	
 	

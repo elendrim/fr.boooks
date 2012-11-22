@@ -134,13 +134,13 @@
     		</div>
     	</div>
     	
-    	<%-- <div class="control-group">
+    	<div class="control-group">
     		<label class="control-label" for="fileCover">Couverture</label>
     		<div class="controls">
     			<form:input path="fileCover" type="file"/>
     			<form:errors path="fileCover" cssClass="help-inline"/>
     		</div>
-    	</div> --%>
+    	</div> 
     	      
                     
     	

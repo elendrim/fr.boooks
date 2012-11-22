@@ -10,15 +10,18 @@ import javax.jcr.RepositoryException;
 import org.boooks.db.common.BooksMimeType;
 import org.boooks.db.entity.Book;
 import org.boooks.jcr.entity.BookData;
+import org.boooks.jcr.entity.FileData;
 
 public interface IBookJcrDAO {  
       
-	Book createOrUpdate(Book book, Map<BooksMimeType, BookData> booksMap) throws RepositoryException, MalformedURLException;  
+	Book createOrUpdate(Book book, Map<BooksMimeType, BookData> booksMap, FileData cover) throws RepositoryException, MalformedURLException;  
       
     Book getById(long id) throws RepositoryException, MalformedURLException;
 
 	BookData getBookData(long bookId, String mimeType) throws RepositoryException, IOException ;
      
 	List<BooksMimeType> getBookMimeType(long bookId) throws RepositoryException, IOException ;
+	
+	FileData getCoverData(long bookId) throws RepositoryException, IOException;
 	
 }  

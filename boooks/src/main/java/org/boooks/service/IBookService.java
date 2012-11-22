@@ -11,6 +11,7 @@ import org.boooks.db.common.BooksMimeType;
 import org.boooks.db.entity.Book;
 import org.boooks.db.entity.UserEntity;
 import org.boooks.jcr.entity.BookData;
+import org.boooks.jcr.entity.FileData;
 import org.boooks.utils.BoooksDataFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,13 +23,16 @@ public interface IBookService {
 	Book getBookDbById(long id);
 	
 	@Transactional
-	Book save(Book book, Map<BooksMimeType, BookData> booksMap) throws RepositoryException, MalformedURLException;
+	Book save(Book book, Map<BooksMimeType, BookData> booksMap,  FileData cover) throws RepositoryException, MalformedURLException;
 
 	@Transactional
 	Book getBookJcrById(long id) throws RepositoryException, MalformedURLException;
 
 	@Transactional
 	BookData getBookData(long id, String mimeType) throws RepositoryException, IOException;
+	
+	@Transactional
+	FileData getCoverData(long id) throws RepositoryException, IOException;
 	
 	@Transactional
 	Book createDummyBook(UserEntity user, BoooksDataFactory df) throws Exception;
