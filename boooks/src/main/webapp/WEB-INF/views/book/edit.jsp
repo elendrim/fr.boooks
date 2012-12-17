@@ -7,7 +7,7 @@
 
 <html>
 <head>
-	<title>Publier</title>
+	<title>Modifier</title>
 	<script type="text/javascript">
 		$(document).ready(function(){
 			 
@@ -57,9 +57,24 @@
 </head>
 <body>
 
-	<h1>Book</h1>
+	<div class="container-fluid">
+		<ul class="nav nav-tabs">
+			<li><a href="book/view.htm?id=${bookForm.id}"><i class="icon-book"></i> Visualiser</a></li>
+		 	<li class="active dropdown">
+		    	<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+		        	<i class="icon-edit" ></i> Editer
+		        	<b class="caret"></b>
+		      	</a>
+			    <ul class="dropdown-menu">
+			      <li><a href="book/edit.htm?id=${bookForm.id}"><i class="icon-pencil"></i> Modifier les informations</a></li>
+			      <li><a href="book/editcover.htm?id=${bookForm.id}"><i class="icon-upload"></i> Modifier la couverture</a></li>
+			    </ul>
+		  	</li>
+		</ul>
+	</div>
     
-    <form:form id="addBook" cssClass="form-horizontal" commandName="bookForm"  enctype="multipart/form-data" method="POST">
+    <form:form id="editBook" cssClass="form-horizontal" commandName="bookForm"  enctype="multipart/form-data" method="POST">
+    	<form:hidden path="id"/>
     	<div class="control-group">
     		<label class="control-label" for="title">Titre</label>
     		<div class="controls">
@@ -113,38 +128,8 @@
     		</div>
     	</div>
     	<div class="control-group">
-    		<label class="control-label" for="fileData">Fichier PDF</label>
     		<div class="controls">
-    			<form:input path="filePdf" type="file"/>
-    			<form:errors path="filePdf" cssClass="help-inline"/>
-    		</div>
-    	</div>
-    	<div class="control-group">
-    		<label class="control-label" for="fileData">Fichier E-Pub</label>
-    		<div class="controls">
-    			<form:input path="fileEpub" type="file"/>
-    			<form:errors path="fileEpub" cssClass="help-inline"/>
-    		</div>
-    	</div>
-    	<div class="control-group">
-    		<label class="control-label" for="fileData">Fichier Texte</label>
-    		<div class="controls">
-    			<form:input path="fileText" type="file"/>
-    			<form:errors path="fileText" cssClass="help-inline"/>
-    		</div>
-    	</div>
-    	
-    	<div class="control-group">
-    		<label class="control-label" for="fileCover">Couverture</label>
-    		<div class="controls">
-    			<form:input path="fileCover" type="file"/>
-    			<form:errors path="fileCover" cssClass="help-inline"/>
-    		</div>
-    	</div>       
-    	
-    	<div class="control-group">
-    		<div class="controls">
-	    		<form:button class="btn btn-primary" ><i class="icon-ok icon-white"></i> Publier</form:button>
+	    		<form:button class="btn btn-primary" ><i class="icon-pencil icon-white"></i> Modifier</form:button>
     		</div>
     	</div>
     </form:form>

@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <decorators defaultdir="/WEB-INF/views/decorators">
 	
+	<decorator name="index" page="index.jsp">
+		<pattern>/index.htm</pattern>
+	</decorator>
+	
 	<decorator name="default" page="default.jsp">
 		<pattern>/*</pattern>
 	</decorator>
+	
 </decorators>

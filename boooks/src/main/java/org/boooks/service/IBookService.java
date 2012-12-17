@@ -24,7 +24,13 @@ public interface IBookService {
 	
 	@Transactional
 	Book save(Book book, Map<BooksMimeType, BookData> booksMap,  FileData cover) throws RepositoryException, MalformedURLException;
+	
+	@Transactional
+	Book update(Book book) throws RepositoryException, MalformedURLException;
 
+	@Transactional
+	void updateCover(long id, FileData coverData) throws RepositoryException, MalformedURLException;
+	
 	@Transactional
 	Book getBookJcrById(long id) throws RepositoryException, MalformedURLException;
 
@@ -52,5 +58,6 @@ public interface IBookService {
 	@Transactional
 	List<BooksMimeType> getBookMimeType(long id) throws RepositoryException, IOException ;
 
+	
 
 }

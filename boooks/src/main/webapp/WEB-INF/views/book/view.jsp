@@ -22,6 +22,25 @@
 </head>
 <body>
 
+
+	
+	<%-- <div class="container-fluid">
+		<ul class="nav nav-tabs">
+			<li class="active"><a><i class="icon-book"></i> Visualiser</a></li>
+		 	<li class="dropdown">
+		    	<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+		        	<i class="icon-edit" ></i> Editer
+		        	<b class="caret"></b>
+		      	</a>
+			    <ul class="dropdown-menu">
+			      <li><a href="book/edit.htm?id=${book.id}"><i class="icon-pencil"></i> Modifier les informations</a></li>
+			      <li><a href="book/editcover.htm?id=${book.id}"><i class="icon-upload"></i> Modifier la couverture</a></li>
+			    </ul>
+		  	</li>
+		</ul>
+	</div> --%>
+	
+
 	<div class="container-fluid">
 		<div class="row-fluid">
 			<div class="span2">
@@ -76,9 +95,35 @@
     			</c:if>
     		</div>
     	</div>
-    	
+
+<%--     	
+    	<!-- INFO: The post URL "checkout.java" is invoked when clicked on "Pay with PayPal" button.-->
+
+		<form action="paypal/checkout.htm" METHOD="POST">
+			<input type="image" name="paypal_submit" id="paypal_submit"  src="https://www.paypal.com/en_US/i/btn/btn_dg_pay_w_paypal.gif" alt="Pay with PayPal"/>
+		</form>
+ --%>    	
 		
 	</div>
+	
+	
+	
+	<!-- Add Digital goods in-context experience. Ensure that this script is added before the closing of html body tag -->
+	
+	<script src="https://www.paypalobjects.com/js/external/dg.js" type="text/javascript"></script>
+	
+	
+	<script>
+	
+		var dg = new PAYPAL.apps.DGFlow(
+		{
+			trigger: 'paypal_submit'
+			//expType: 'instant'
+			 //PayPal will decide the experience type for the buyer based on his/her 'Remember me on your computer' option.
+		});
+	
+	</script>
+		
 
 </body>
 </html>

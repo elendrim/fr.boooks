@@ -26,9 +26,12 @@ import org.boooks.service.IBookService;
 import org.boooks.service.IGenreService;
 import org.boooks.service.ITypeService;
 import org.boooks.service.IUserService;
+import org.boooks.web.form.BookCoverForm;
 import org.boooks.web.form.BookForm;
 import org.boooks.web.propertyeditor.GenreEditor;
 import org.boooks.web.propertyeditor.TypeEditor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -49,6 +52,8 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 @Controller
 @RequestMapping("book")
 public class BookController {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(BookController.class);
 	
 	private static final int PAGE_BOOK_SIZE = 24;
 
@@ -89,8 +94,12 @@ public class BookController {
         Book book = bookService.getBookDbById(id);
         model.addAttribute("book", book);
         
-        List<BooksMimeType> booksMimeTypeList = bookService.getBookMimeType(id);
-        model.addAttribute("booksMimeTypeList", booksMimeTypeList);
+        try {
+	        List<BooksMimeType> booksMimeTypeList = bookService.getBookMimeType(id);
+	        model.addAttribute("booksMimeTypeList", booksMimeTypeList);
+        } catch (RepositoryException e) {
+        	LOGGER.error("Unable to get books mime type list", e);
+        }
         
         return "book/view";
 		
@@ -192,6 +201,98 @@ public class BookController {
 		Book savedBook = bookService.save(book, booksMap, coverData);
 		
 		model.addAttribute("id", savedBook.getId());
+        return "redirect:/book/view.htm";
+    }
+	
+	
+	@RequestMapping(value="/edit", method = RequestMethod.GET)
+    public String add(@RequestParam long id, ModelMap model, Principal principal) {
+		
+		Book book = bookService.getBookDbById(id);
+		
+		BookForm bookForm = new BookForm();
+		bookForm.setId(book.getId());
+		
+		List<String> authorList = new ArrayList<String>();
+		for (Author author : book.getAuthors() ) {
+			 authorList.add(author.getName());
+		}
+		
+		bookForm.setAuthors(authorList);
+		
+		bookForm.setGenre(book.getGenre());
+		bookForm.setNbPage(book.getNbPage());
+		bookForm.setResume(book.getResume());
+		bookForm.setTitle(book.getTitle());
+		bookForm.setType(book.getType());
+		
+		model.addAttribute("bookForm", bookForm);
+        return "book/edit";
+    }
+	
+	@RequestMapping(value="/edit", method = RequestMethod.POST)
+    public String edit(@Valid BookForm bookForm, BindingResult result, ModelMap model,  Principal principal) throws RepositoryException, MalformedURLException {
+		
+		if ( result.hasErrors() ) {
+			model.addAttribute("bookForm", bookForm);	
+			return "book/edit";
+		}
+		
+		Book book = bookService.getBookDbById(bookForm.getId());
+		
+		book.setTitle(bookForm.getTitle());
+		book.setGenre(genreService.getById(bookForm.getGenre().getId()));
+		book.setType(typeService.getById(bookForm.getType().getId()));
+		book.setNbPage(bookForm.getNbPage());
+		book.setResume(bookForm.getResume());
+		
+		List<Author> authorList = new ArrayList<Author>();
+		for (String authorName : bookForm.getAuthors()) {
+			Author author = new Author();
+			author.setName(authorName);
+			authorList.add(author);
+		}
+		book.setAuthors(authorList);
+		
+		
+		Book savedBook = bookService.update(book);
+		
+		model.addAttribute("id", savedBook.getId());
+        return "redirect:/book/view.htm";
+    }
+	
+	@RequestMapping(value="/editcover", method = RequestMethod.GET)
+    public String editcover(@RequestParam long id, ModelMap model, Principal principal) {
+		
+		Book book = bookService.getBookDbById(id);
+		
+		BookCoverForm bookCoverForm = new BookCoverForm();
+		bookCoverForm.setId(book.getId());
+		
+		model.addAttribute("bookCoverForm", bookCoverForm);
+        return "book/editcover";
+    }
+	
+	@RequestMapping(value="/editcover", method = RequestMethod.POST)
+    public String editcover(@Valid BookCoverForm bookCoverForm, BindingResult result, ModelMap model,  Principal principal) throws RepositoryException, MalformedURLException {
+		
+		if ( result.hasErrors() ) {
+			model.addAttribute("bookCoverForm", bookCoverForm);	
+			return "book/editcover";
+		}
+		
+		FileData coverData = null;
+		if ( bookCoverForm.getFileCover() != null && !bookCoverForm.getFileCover().isEmpty() ) {
+			CommonsMultipartFile file = bookCoverForm.getFileCover();
+			coverData = new FileData();
+			coverData.setBytes(file.getBytes());
+			coverData.setMimeType(file.getContentType());
+			coverData.setFilename(file.getOriginalFilename());
+		}
+		
+		bookService.updateCover(bookCoverForm.getId(), coverData);
+		
+		model.addAttribute("id", bookCoverForm.getId());
         return "redirect:/book/view.htm";
     }
 	

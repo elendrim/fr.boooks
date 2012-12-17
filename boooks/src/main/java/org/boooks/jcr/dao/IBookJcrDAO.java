@@ -14,7 +14,11 @@ import org.boooks.jcr.entity.FileData;
 
 public interface IBookJcrDAO {  
       
-	Book createOrUpdate(Book book, Map<BooksMimeType, BookData> booksMap, FileData cover) throws RepositoryException, MalformedURLException;  
+	Book save(Book book, Map<BooksMimeType, BookData> booksMap, FileData cover) throws RepositoryException, MalformedURLException;
+	
+	Book update(Book book) throws RepositoryException, MalformedURLException;
+	
+	void updateCover(long id, FileData coverData) throws RepositoryException, MalformedURLException ;
       
     Book getById(long id) throws RepositoryException, MalformedURLException;
 
@@ -23,5 +27,7 @@ public interface IBookJcrDAO {
 	List<BooksMimeType> getBookMimeType(long bookId) throws RepositoryException, IOException ;
 	
 	FileData getCoverData(long bookId) throws RepositoryException, IOException;
+
+	
 	
 }  

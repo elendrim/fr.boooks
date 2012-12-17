@@ -84,10 +84,44 @@ public class BookService implements IBookService {
 		book = bookDAO.save(book);
 		
 		/** save the book into JCR **/
-		book = bookJcrDAO.createOrUpdate(book, booksMap, cover);
+		book = bookJcrDAO.save(book, booksMap, cover);
 		
 		return book; 
 	}
+	
+	@Override
+	@Transactional(readOnly=false, rollbackFor={RepositoryException.class, MalformedURLException.class})
+	public Book update(Book book) throws RepositoryException, MalformedURLException {
+		
+		/** save authors **/
+		List<Author> authors = new ArrayList<Author>();
+		for (Author author : book.getAuthors()) {
+			Author authorBase = authorService.getAuthorByName(author.getName());
+			if ( authorBase == null ) {
+				authorBase = authorService.save(author);
+			}
+			authors.add(authorBase);
+		}
+		book.setAuthors(authors);
+		
+		/** save the book into DB **/
+		book = bookDAO.save(book);
+		
+		/** refresh **/
+		book = bookDAO.getById(book.getId());
+		
+		/** save the book into JCR **/
+		book = bookJcrDAO.update(book);
+		
+		return book;
+	}
+	
+	@Override
+	@Transactional(readOnly=false)
+	public void updateCover(long id, FileData coverData) throws RepositoryException, MalformedURLException {
+		bookJcrDAO.updateCover(id, coverData);
+	}
+	
 
 	@Override
 	@Transactional(readOnly=true)
@@ -202,5 +236,7 @@ public class BookService implements IBookService {
 	public List<BooksMimeType> getBookMimeType(long id) throws RepositoryException, IOException {
 		return bookJcrDAO.getBookMimeType(id);
 	}
+
+
 	
 }

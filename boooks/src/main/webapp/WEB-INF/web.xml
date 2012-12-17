@@ -75,7 +75,6 @@
 		<url-pattern>/rest/*</url-pattern>
 	</servlet-mapping>
 	
-	
 	<resource-ref>
 	    <description>Boooks datasource</description>
 	    <res-ref-name>jdbc/boooks</res-ref-name>

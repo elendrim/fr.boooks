@@ -20,31 +20,15 @@
 	<script src="static/js/jquery-1.8.0.min.js"></script>
 	<script src="static/js/bootstrap.min.js"></script>
 	
+	
 	<decorator:head />
 </head>
 <body>
 
 	<%@ include file="/WEB-INF/views/menu/menu.jsp" %>
 	
-	
-	<div class="container">
-		<br />
-		
- 		<div class="alert">
-	  		<strong>Attention!</strong> Boooks est en version beta. 
-		</div> 
-		
-		<c:if test="${!empty messageSuccess}">
-			<div class="alert alert-success">${messageSuccess}</div>
-		</c:if>
-		
-	
-	    <decorator:body />
-	    
-		<hr />
-	
-	</div> <!-- /container -->
-
+    <decorator:body />
+    
   	<footer>
       	<p>&copy; Boooks 2012 - <a href="#">Mentions légales</a></p>
    	</footer>

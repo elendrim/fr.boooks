@@ -16,6 +16,8 @@
 		<intercept-url pattern="/tags/**" access="denyAll" />
 		<intercept-url pattern="/tld/**" access="denyAll" />
 		<intercept-url pattern="/book/add.htm" access="hasRole('USER')" />
+		<intercept-url pattern="/book/edit.htm" access="hasRole('USER')" />
+		<intercept-url pattern="/book/editcover.htm" access="hasRole('USER')" />
 		<intercept-url pattern="/book/myPublications.htm" access="hasRole('USER')" />
 		<intercept-url pattern="/settings/**" access="hasRole('USER')" />
 	 	<intercept-url pattern="/**" access="permitAll" />

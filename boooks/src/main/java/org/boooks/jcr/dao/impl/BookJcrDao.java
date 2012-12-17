@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 
 import javax.jcr.Binary;
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -67,7 +68,7 @@ public class BookJcrDao implements IBookJcrDAO {
 	private  String jcrUrl;
 	
 	@Override
-	public Book createOrUpdate(Book book, Map<BooksMimeType, BookData> booksMap, FileData cover) throws RepositoryException, MalformedURLException {
+	public Book save(Book book, Map<BooksMimeType, BookData> booksMap, FileData cover) throws RepositoryException, MalformedURLException {
 		
 		Repository repository = JcrUtils.getRepository(jcrUrl); 
 		Session session = repository.login( new SimpleCredentials("admin", "admin".toCharArray()));
@@ -138,6 +139,9 @@ public class BookJcrDao implements IBookJcrDAO {
     		
     		session.save(); 
     		
+		} catch ( RepositoryException e) {
+    		LOGGER.error("Error getting book data", e);
+    		throw e;
     	} finally { 
     		IOUtils.closeQuietly(inputStream);
     		session.logout(); 
@@ -145,6 +149,149 @@ public class BookJcrDao implements IBookJcrDAO {
 		return book;
 		
 	}
+	
+
+	@Override
+	public Book update(Book book) throws RepositoryException, MalformedURLException {
+
+		Repository repository = JcrUtils.getRepository(jcrUrl); 
+		Session session = repository.login( new SimpleCredentials("admin", "admin".toCharArray()));
+		
+		try { 
+    		String user = session.getUserID(); 
+    		String repositoryname = repository.getDescriptor(Repository.REP_NAME_DESC); 
+    		LOGGER.debug( "Logged in as " + user + " to a " + repositoryname + " repository.");
+    		
+    		
+    		// Retrieve content 
+    		StringBuilder expression = new StringBuilder();
+    		expression.append("SELECT * FROM [nt:unstructured] AS book ");
+    		expression.append("WHERE id = "+ book.getId() +" " );
+    		
+			QueryManager queryMgr = session.getWorkspace().getQueryManager();
+			Query query = queryMgr.createQuery(expression.toString(),Query.JCR_SQL2);
+//			query.bindValue("id", new LongValue(bookId));
+			QueryResult result = query.execute();
+			RowIterator rowIterator = result.getRows();
+
+			if (rowIterator.hasNext() ) {
+				Node node = rowIterator.nextRow().getNode();
+	    		    		
+				// Store metadata content 
+	    		node.setProperty("description", book.getDescription());
+	    		node.setProperty("keywords", book.getKeywords());
+	    		node.setProperty("resume", book.getResume());
+	    		node.setProperty("title", book.getTitle());
+	    		
+	    		
+	    		
+//	    		
+//	    		
+//	    		Node authorsNode = JcrUtils.getOrAddNode(node, "authors");
+//	    		
+//	    		if ( book.getAuthors() != null &&  !book.getAuthors().isEmpty() ) {
+//	    			while ( authorsNode.hasNode("author") ) {
+//	    				authorsNode.getNode("author").remove();
+//	    			}
+//	    			for (Author author :  book.getAuthors() ) {
+//	    				Node authorNode = authorsNode.addNode("author");
+//	    				authorNode.setProperty("name", author.getName());	
+//					}
+//	    		} else {
+//	    			while ( authorsNode.hasNode("author") ) {
+//	    				authorsNode.getNode("author").remove();
+//	    			}
+//	    		}
+//	    		
+//	    		if ( book.getGenre() != null ) {
+//	    			Node genre = JcrUtils.getOrAddNode(node, "genre");
+//	    			genre.setProperty("id", book.getGenre().getId() );
+//	    			genre.setProperty("liGenre", book.getGenre().getLiGenre() );
+//	    		} else {
+//	    			if ( node.hasNode("genre")) {
+//	    				node.getNode("genre").remove();
+//	    			}
+//	    		}
+//	    		
+//	    		if ( book.getType() != null ) {
+//	    			Node type = JcrUtils.getOrAddNode(node,"type");
+//	    			type.setProperty("id", book.getType().getId() );
+//	    			type.setProperty("liType", book.getType().getLiType() );
+//	    		} else {
+//	    			if ( node.hasNode("type") ) {
+//	    				node.getNode("type").remove();
+//	    			}
+//	    		}
+	    		
+	    		session.save(); 
+			}
+    	} catch ( RepositoryException e) {
+    		LOGGER.error("Error getting book data", e);
+    		throw e;
+    	} finally { 
+    		session.logout(); 
+		}
+		return book;
+	} 
+	
+	
+
+
+	@Override
+	public void updateCover(long bookId, FileData cover) throws RepositoryException, MalformedURLException {
+
+		Repository repository = JcrUtils.getRepository(jcrUrl); 
+		Session session = repository.login( new SimpleCredentials("admin", "admin".toCharArray()));
+		ByteArrayInputStream inputStream = null;
+		try { 
+    		String user = session.getUserID(); 
+    		String name = repository.getDescriptor(Repository.REP_NAME_DESC); 
+    		LOGGER.debug( "Logged in as " + user + " to a " + name + " repository.");
+    		
+    		// Retrieve content 
+    		StringBuilder expression = new StringBuilder();
+    		
+    		expression.append("select * from [nt:unstructured] as book ");
+    		expression.append("where book.id = "+ bookId + " ");
+    		expression.append("and ischildnode (book, [/]) ");
+    		expression.append("and name(book) = 'book' ");
+    		
+			QueryManager queryMgr = session.getWorkspace().getQueryManager();
+			Query query = queryMgr.createQuery(expression.toString(),Query.JCR_SQL2);
+//			query.bindValue("id", new LongValue(bookId));
+			QueryResult result = query.execute(); 
+			RowIterator rowIterator = result.getRows();
+
+			if (rowIterator.hasNext() ) {
+				
+				Node node = rowIterator.nextRow().getNode("book");
+				
+				if ( node.hasNode("cover")) {
+    				node.getNode("cover").remove();
+    			}
+		        
+				if ( cover != null ) {
+					Node coverNode = JcrUtils.getOrAddNode(node, "cover");
+					
+	    			Node file = JcrUtils.getOrAddNode(coverNode,cover.getFilename(),"nt:file");
+	        		Node content = JcrUtils.getOrAddNode(file,"jcr:content","nt:resource");
+	        		inputStream = new ByteArrayInputStream(cover.getBytes());
+	        		Binary binary = session.getValueFactory().createBinary(inputStream);
+	        		content.setProperty("jcr:data",binary);
+	        		content.setProperty("jcr:mimeType", cover.getMimeType());
+	        		content.setProperty("jcr:lastModified", Calendar.getInstance());
+	    		}
+	    		session.save(); 
+			}
+		} catch ( RepositoryException e) {
+    		LOGGER.error("Error getting book data", e);
+    		throw e;
+    	} finally { 
+    		IOUtils.closeQuietly(inputStream);
+    		session.logout(); 
+		}
+		
+	} 
 	
 	
 	
@@ -198,8 +345,9 @@ public class BookJcrDao implements IBookJcrDAO {
 		        bookData.setTitle(title);
 		        
 			}
-    	} catch ( Exception e) {
+    	} catch ( RepositoryException e) {
     		LOGGER.error("Error during download file", e);
+    		throw e;
     	} finally { 
     		IOUtils.closeQuietly(inputStream);
     		if ( bin != null ) {
@@ -254,8 +402,9 @@ public class BookJcrDao implements IBookJcrDAO {
 		        fileData.setMimeType(contentMimeType);
 		        
 			}
-    	} catch ( Exception e) {
+    	} catch ( RepositoryException e) {
     		LOGGER.error("Error during download file", e);
+    		throw e;
     	} finally { 
     		IOUtils.closeQuietly(inputStream);
     		if ( bin != null ) {
@@ -299,8 +448,9 @@ public class BookJcrDao implements IBookJcrDAO {
 				BooksMimeType booksMimeType = BooksMimeType.searchByMimeType(contentMimeType);
 				booksMimeTypeList.add(booksMimeType);
 			}
-		} catch ( Exception e) {
+		} catch ( RepositoryException e) {
     		LOGGER.error("Error during download file", e);
+    		throw e;
     	} finally { 
     		session.logout(); 
 		}
@@ -329,9 +479,10 @@ public class BookJcrDao implements IBookJcrDAO {
 			Query query = queryMgr.createQuery(expression,Query.JCR_SQL2);
 //			query.bindValue("id", new LongValue(bookId));
 			QueryResult result = query.execute();
-
-			if (result.getRows().hasNext() ) {
-				Node node = result.getRows().nextRow().getNode();
+			RowIterator rowIterator = result.getRows();
+			
+			if (rowIterator.hasNext() ) {
+				Node node = rowIterator.nextRow().getNode();
 	    		    		
 	    		book = new Book();
 	    		if ( node.hasProperty("id") ) {
@@ -402,13 +553,15 @@ public class BookJcrDao implements IBookJcrDAO {
 	    			book.setType(type);	
 	    		}
 			}
-    	} catch ( Exception e) {
+    	} catch ( RepositoryException e) {
     		LOGGER.error("Error getting book data", e);
+    		throw e;
     	} finally { 
     		session.logout(); 
 		}
 		return book;
-	} 
+	}
+
 
   
      

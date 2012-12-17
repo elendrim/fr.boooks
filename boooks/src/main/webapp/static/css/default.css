@@ -3,9 +3,307 @@
 */
 
 body {
-	padding-top: 60px;
-  	padding-bottom: 40px;
+	padding-top: 40px;
+  	padding-bottom: 60px;
 }
+
+
+/* Red color */
+
+
+a {
+	color: #8e211f;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #8e211f;
+}
+
+.dropdown-menu li>a:hover,.dropdown-menu li>a:focus,.dropdown-submenu:hover>a
+	{
+	text-decoration: none;
+	color: #ffffff;
+	background-color: #861f1d;
+	background-image: -moz-linear-gradient(top, #8e211f, #791c1a);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#8e211f),
+		to(#791c1a) );
+	background-image: -webkit-linear-gradient(top, #8e211f, #791c1a);
+	background-image: -o-linear-gradient(top, #8e211f, #791c1a);
+	background-image: linear-gradient(to bottom, #8e211f, #791c1a);
+	background-repeat: repeat-x;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff8e211f',
+		endColorstr='#ff791c1a', GradientType=0 );
+}
+
+.dropdown-menu .active>a,.dropdown-menu .active>a:hover {
+	color: #ffffff;
+	text-decoration: none;
+	outline: 0;
+	background-color: #861f1d;
+	background-image: -moz-linear-gradient(top, #8e211f, #791c1a);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#8e211f),
+		to(#791c1a) );
+	background-image: -webkit-linear-gradient(top, #8e211f, #791c1a);
+	background-image: -o-linear-gradient(top, #8e211f, #791c1a);
+	background-image: linear-gradient(to bottom, #8e211f, #791c1a);
+	background-repeat: repeat-x;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff8e211f',
+		endColorstr='#ff791c1a', GradientType=0 );
+}
+
+.btn-primary {
+	color: #ffffff;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+	background-color: #8e301f;
+	/* background-image: -moz-linear-gradient(top, center, #8e211f, #8e461f);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#8e211f),
+		to(#8e461f) );
+	background-image: -webkit-linear-gradient(top, #8e211f, #8e461f);
+	background-image: -o-linear-gradient(top, #8e211f, #8e461f);
+	background-image: linear-gradient(to bottom, #8e211f, #8e461f); */
+	background-image: none;
+	background-repeat: repeat-x;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff8e211f',
+		endColorstr='#ff8e461f', GradientType=0 );
+	border-color: #8e461f #8e461f #4f2711;
+	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+	*background-color: #8e461f;
+	filter: progid:DXImageTransform.Microsoft.gradient(enabled=  false );
+}
+
+.btn {
+	background-image: none;
+}
+
+.btn-primary:hover,.btn-primary:active,.btn-primary.active,.btn-primary.disabled,.btn-primary[disabled]
+	{
+	color: #ffffff;
+	background-color: #8e461f;
+	*background-color: #793c1a;
+}
+
+.btn-link {
+	border-color: transparent;
+	cursor: pointer;
+	color: #8e211f;
+	-webkit-border-radius: 0;
+	-moz-border-radius: 0;
+	border-radius: 0;
+}
+
+.nav-list>.active>a,.nav-list>.active>a:hover {
+	color: #ffffff;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
+	background-color: #8e211f;
+}
+
+.nav-pills>.active>a,.nav-pills>.active>a:hover {
+	color: #ffffff;
+	background-color: #8e211f;
+}
+
+.nav .dropdown-toggle .caret {
+	border-top-color: #8e211f;
+	border-bottom-color: #8e211f;
+	margin-top: 6px;
+}
+
+a.thumbnail:hover {
+	border-color: #8e211f;
+	-webkit-box-shadow: 0 1px 4px rgba(0, 105, 214, 0.25);
+	-moz-box-shadow: 0 1px 4px rgba(0, 105, 214, 0.25);
+	box-shadow: 0 1px 4px rgba(0, 105, 214, 0.25);
+}
+
+/* default */
+
+.navbar .brand { max-height: 40px; overflow: visible;padding-top: 0;padding-bottom: 0; }
+
+footer {
+	background: #ddd7d0;
+	border-bottom: 3px solid #8e211f;
+	position: fixed;
+	bottom: 0;
+	height: 20px;
+	width: 100%;
+	padding: 1px 0;
+}
+
+footer p {
+	color: #938b80;
+	font-size: 10px;
+	text-align: right;
+	margin-right: 10px;
+}
+
+footer a {
+	color: #938b80;
+}
+
+h1,h2,h3,h4,h5,h6 {
+	margin: 10px 0;
+	font-family: inherit;
+	font-weight: bold;
+	line-height: 1;
+	color: #ce3432;
+	text-rendering: optimizelegibility;
+	font-family: 'Oswald', 'Shadows Into Light', 'Yanone Kaffeesatz',
+		'Cuprum', 'Francois One', 'Mako', 'Ruluko', 'Cabin Condensed',
+		sans-serif;
+	font-weight: normal;
+}
+
+h1 small,h2 small,h3 small,h4 small,h5 small,h6 small {
+	font-weight: normal;
+	line-height: 1;
+	color: #999
+}
+
+h1 {
+	font-size: 36px;
+	line-height: 40px
+}
+
+h2 {
+	font-size: 30px;
+	line-height: 40px
+}
+
+h3 {
+	font-size: 24px;
+	line-height: 40px
+}
+
+h4 {
+	font-size: 18px;
+	line-height: 20px
+}
+
+h5 {
+	font-size: 14px;
+	line-height: 20px
+}
+
+h6 {
+	font-size: 12px;
+	line-height: 20px
+}
+
+/* Accueil */
+
+
+.accueil-beta {
+    background-color: #CE3432;
+    border: 1px solid #A5211F;
+    border-radius: 62px 62px 62px 62px;
+    color: #FFFFFF;
+    font-family: 'Oswald',sans-serif;
+    font-size: 17px;
+    padding: 23px 24px 18px;
+    position: absolute;
+    top: 50px;
+    right:70px;
+    text-align: center;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    width: 77px;
+}
+
+#accueil-blocs:after {
+	clear: both
+}
+
+.accueil-bloc {
+	background: none repeat scroll 0 0 #EAE6E1;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	float: left;
+	margin-right: 20px;
+	padding: 20px 15px;
+	width: 288px;
+	height: 285px;
+	-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+	-moz-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+	border: 1px solid #c7c2bb;
+}
+
+.accueil-bloc .btn {
+	width: 100%;
+}
+
+.btn-bottom {
+	margin: 91px 0 0;
+}
+
+
+.accueil-bloc p {
+	font-size: 12px;
+}
+
+
+#bloc-publier img,#bloc-decouvrir img {
+	margin: 10px 75px 5px;
+}
+
+#bloc-selection {
+	margin-right: 0px;
+}
+
+
+#accueil-bandeau {
+	background-color: #eee;
+	background: url("../img/fond-bibliotheque-bureau.jpg") repeat-x scroll
+		center -190px transparent;
+}
+
+#accueil-bandeau-texte {
+	padding: 40px 0;
+	margin-bottom: 30px;
+	float: left;
+	width: 660px;
+}
+
+#accueil-bandeau-texte-1 {
+	width: 190px;
+	float: left;
+	margin: 0 20px 0 0;
+}
+
+#accueil-bandeau-texte-2 {
+	width: 260px;
+	float: left;
+}
+
+#accueil-bandeau h1 {
+	margin-bottom: 30px;
+	font-size: 60px;
+	line-height: 1;
+	letter-spacing: -1px;
+}
+
+#accueil-bandeau h2 {
+	margin-bottom: 20px;
+	font-size: 27px;
+	line-height: 1.2;
+	letter-spacing: -1px;
+}
+
+#accueil-bandeau p {
+	line-height: 25px;
+}
+
+#accueil-bandeau-img {
+	width: 336px;
+	height: 400px;
+	float: right;
+	background: url("../img/pile-livres.png") no-repeat scroll center bottom
+		transparent;
+}
+
+
+/* Boooks pages */
 
 .dl-horizontal > dd:after {
   display: table;
