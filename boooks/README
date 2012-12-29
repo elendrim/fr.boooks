@@ -41,6 +41,15 @@ Add a resource in tomcat configuration context.xml
 		testOnReturn="false"
 		testWhileIdle="false"/>                           
 
+Add a bean in database-context-gen.xml
+fill the data url, username and password :
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	    <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+	    <property name="url" value="jdbc:mysql://${url}/boooks?autocommit=true"/>
+        <property name="username" value="${username}"/>
+        <property name="password" value="${password}"/>
+	</bean>
+
 
 
 Create a propertie =>
