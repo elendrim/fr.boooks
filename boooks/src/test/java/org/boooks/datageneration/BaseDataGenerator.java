@@ -117,5 +117,11 @@ public class BaseDataGenerator {
 		return getRandomByte(1)[0];
 	}
 
+	public int getNumberAround(int nb_comments, int percent) {
+		int min = (nb_comments * (100 - percent)) / 100;
+		int max = (nb_comments * (100 + percent)) / 100;
+		
+		return this.getNumberBetween(min, max);
+	}
 
 }
