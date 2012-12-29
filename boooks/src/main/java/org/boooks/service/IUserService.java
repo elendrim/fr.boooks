@@ -2,7 +2,6 @@ package org.boooks.service;
 
 import org.boooks.db.entity.UserEntity;
 import org.boooks.exception.BusinessException;
-import org.boooks.utils.BoooksDataFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface IUserService {
@@ -24,9 +23,5 @@ public interface IUserService {
 
 	@Transactional
 	void deleteUser(String email);
-	
-	@Transactional
-	UserEntity createDummyUser(Boolean admin, BoooksDataFactory df) throws Exception;
-
-	  
+		  
 }

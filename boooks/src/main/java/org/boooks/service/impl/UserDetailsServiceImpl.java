@@ -8,17 +8,14 @@ import org.boooks.db.dao.ITempKeyDAO;
 import org.boooks.db.dao.IUserDAO;
 import org.boooks.db.entity.SecurityRoleEntity;
 import org.boooks.db.entity.SecurityRoleEntityPk;
-import org.boooks.db.entity.SexEnum;
 import org.boooks.db.entity.TempKey;
 import org.boooks.db.entity.TempKeyPK;
 import org.boooks.db.entity.UserEntity;
 import org.boooks.exception.BusinessException;
 import org.boooks.service.IMailRegistrationService;
 import org.boooks.service.IUserService;
-import org.boooks.utils.BoooksDataFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -144,54 +141,6 @@ public class UserDetailsServiceImpl implements UserDetailsService, IUserService 
 
 	}
 
-	/*
-	 * I didn't know where to put it, maybe in the test part someday
-	 * Use DataFactory for creating stuff
-	 * 
-	 * For testing sake, the password is always the string "pass"
-	 * @see org.boooks.service.IUserService#createDummyUser(java.lang.Boolean)
-	 */
-	@Override
-	@Transactional
-	public UserEntity createDummyUser(Boolean admin, BoooksDataFactory df) throws Exception {
-		//TODO set use the admin parameter
-		//TODO set a test, for if we are in dev or procduction
-		//see also : http://code.google.com/p/jpamock/
-		
-		UserEntity user = new UserEntity();
-		
-		
-		String base_email = df.df.getEmailAddress();
-		String email = base_email;
-		
-		//try to have a uniq email, because the data generator don't prove the unicity
-		if(findUserByEmail(email) != null){
-			for(int i=0;i<1000;i++){
-				email = i + "_" + base_email;
-				if(findUserByEmail(email) == null) break;
-			}
-		}
-		
-		user.setPassword("pass");
-		user.setActive(false);
-		user.setBirthDate(df.df.getBirthDate());
-		user.setEmail(email);
-		user.setFirstname(df.df.getFirstName());
-		user.setLastname(df.df.getLastName());
-		
-		SexEnum sex = df.df.getItem(SexEnum.values());
-		user.setSex(sex);
-		
-		ShaPasswordEncoder shaPasswordEncoder = new ShaPasswordEncoder(256);
-		user.setPassword(shaPasswordEncoder.encodePassword(user.getPassword(), null));
-	
-	
-		user = this.registerUser(user, false);
-		
-		String tempKey = tempKeyDAO.findByEmail(user.getEmail()).get(0).getTempKeyPK().getTempkey();
-		this.activate(email, tempKey);
-		
-		return user;
-	}
+
 
 }

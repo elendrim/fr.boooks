@@ -4,8 +4,6 @@ package org.boooks.service.impl;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,15 +16,11 @@ import org.boooks.db.dao.ITypeDAO;
 import org.boooks.db.dao.imp.SearchBookDAO;
 import org.boooks.db.entity.Author;
 import org.boooks.db.entity.Book;
-import org.boooks.db.entity.Genre;
-import org.boooks.db.entity.Type;
-import org.boooks.db.entity.UserEntity;
 import org.boooks.jcr.dao.IBookJcrDAO;
 import org.boooks.jcr.entity.BookData;
 import org.boooks.jcr.entity.FileData;
 import org.boooks.service.IAuthorService;
 import org.boooks.service.IBookService;
-import org.boooks.utils.BoooksDataFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -170,67 +164,7 @@ public class BookService implements IBookService {
 		PageImpl<Book> page = new PageImpl<Book>(books, pageable, total);
 		return page;
 	}
-	
-	
-	/*
-	 * I didn't know where to put it, maybe in the test part someday
-	 * Use DataFactory for creating stuff
-	 * 
-	 * @see org.boooks.service.IUserService#createDummyUser(java.lang.Boolean)
-	 */
-	@Override
-	@Transactional
-	public Book createDummyBook(UserEntity user, BoooksDataFactory df) throws Exception {
-		
-		//fill the genre and type if it don't exists
-		String[] genres = {"Science fiction", "Policier", "Amour", "Fantastique", "Heroic Fantasy"};
-		String[] types = {"Nouvelle", "Roman", "Essai", "Thèse", "Manga"};
-		
-		if(genreDAO.count() == 0){
-			for(String genre: genres){
-				Genre g = new Genre();
-				g.setLiGenre(genre);
-				genreDAO.save(g);
-			}
-		}
-		
-		if(typeDAO.count() == 0){
-			for(String type: types){
-				Type t = new Type();
-				t.setLiType(type);
-				typeDAO.save(t);
-			}
-		}
-		
-		//fill the book
-		Book book = new Book();
-		
-		book.setTitle(df.getBoookTitle());
-		book.setGenre(df.df.getItem(genreDAO.findAll()));
-		book.setType(df.df.getItem(typeDAO.findAll()));
-		
-		book.setNbPage(df.df.getNumberBetween(50, 500));
-		book.setResume(df.df.getRandomText(100, 3000));
-		book.setPublishDate(new Date());
-		book.setPublishDate(df.df.getDate(new Date(), -1000, 0));
-		book.setUser(user);
-		
-		
-		byte[] dataBytes = df.df.getRandomText(df.df.getNumberBetween(200, 1000) * book.getNbPage()).getBytes();
-		
-		
-		Map<BooksMimeType, BookData> bookDataList = new HashMap<BooksMimeType, BookData>();
-		BookData bookData = new BookData();
-		bookData.setBytes(dataBytes);
-		bookData.setFilename("filename");
-		bookData.setMimeType(BooksMimeType.TEXT.getMimeType());
-		bookData.setTitle(book.getTitle());
-		bookDataList.put(BooksMimeType.TEXT, bookData);
-		
-		book = this.save(book, bookDataList, null);
-		
-		return book;
-	}
+
 
 	@Override
 	public List<BooksMimeType> getBookMimeType(long id) throws RepositoryException, IOException {

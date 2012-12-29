@@ -9,10 +9,8 @@ import javax.jcr.RepositoryException;
 
 import org.boooks.db.common.BooksMimeType;
 import org.boooks.db.entity.Book;
-import org.boooks.db.entity.UserEntity;
 import org.boooks.jcr.entity.BookData;
 import org.boooks.jcr.entity.FileData;
-import org.boooks.utils.BoooksDataFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,9 +38,6 @@ public interface IBookService {
 	@Transactional
 	FileData getCoverData(long id) throws RepositoryException, IOException;
 	
-	@Transactional
-	Book createDummyBook(UserEntity user, BoooksDataFactory df) throws Exception;
-
 	@Transactional
 	Page<Book> findAllBooks(Pageable pageable);
 

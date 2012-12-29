@@ -5,7 +5,6 @@ import java.util.List;
 import org.boooks.db.entity.Book;
 import org.boooks.db.entity.MainComment;
 import org.boooks.db.entity.UserEntity;
-import org.boooks.utils.BoooksDataFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface IMainCommentService {
@@ -21,9 +20,5 @@ public interface IMainCommentService {
 	
 	@Transactional
 	MainComment update(MainComment mainComment);
-
-	@Transactional
-	MainComment createDummyMainComment(UserEntity user, Book book, BoooksDataFactory df)
-			throws Exception;
 	
 }
