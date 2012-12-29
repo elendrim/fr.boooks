@@ -62,10 +62,23 @@ import org.springframework.stereotype.Component;
 public class BookJcrDao implements IBookJcrDAO {            
 	
 	private Logger LOGGER = LoggerFactory.getLogger(BookJcrDao.class);
-	
     
 	@Value("${jcr.url}")
 	private  String jcrUrl;
+
+	
+	static private String sanitize(String s){
+		return s.replace(":", "_");
+	}
+	
+	static private String sanitize(BookData bd){
+		return sanitize(bd.getFilename());
+	}
+	
+	static private String sanitize(FileData fd){
+		return sanitize(fd.getFilename());
+	}
+	
 	
 	@Override
 	public Book save(Book book, Map<BooksMimeType, BookData> booksMap, FileData cover) throws RepositoryException, MalformedURLException {
@@ -115,7 +128,7 @@ public class BookJcrDao implements IBookJcrDAO {
     		
     		// Store files info 
     		for (Entry<BooksMimeType, BookData> entrySet : booksMap.entrySet()) {
-    			Node file = node.addNode(entrySet.getValue().getFilename(),"nt:file");
+    			Node file = node.addNode(sanitize(entrySet.getValue()),"nt:file");
         		Node content = file.addNode("jcr:content","nt:resource");
         		inputStream = new ByteArrayInputStream(entrySet.getValue().getBytes());
         		Binary binary = session.getValueFactory().createBinary(inputStream);
@@ -126,7 +139,7 @@ public class BookJcrDao implements IBookJcrDAO {
     		
     		if ( cover != null ) {
     			Node coverNode = node.addNode("cover");
-    			Node file = coverNode.addNode(cover.getFilename(),"nt:file");
+    			Node file = coverNode.addNode(sanitize(cover),"nt:file");
         		Node content = file.addNode("jcr:content","nt:resource");
         		inputStream = new ByteArrayInputStream(cover.getBytes());
         		Binary binary = session.getValueFactory().createBinary(inputStream);
@@ -273,7 +286,7 @@ public class BookJcrDao implements IBookJcrDAO {
 				if ( cover != null ) {
 					Node coverNode = JcrUtils.getOrAddNode(node, "cover");
 					
-	    			Node file = JcrUtils.getOrAddNode(coverNode,cover.getFilename(),"nt:file");
+	    			Node file = JcrUtils.getOrAddNode(coverNode, sanitize(cover), "nt:file");
 	        		Node content = JcrUtils.getOrAddNode(file,"jcr:content","nt:resource");
 	        		inputStream = new ByteArrayInputStream(cover.getBytes());
 	        		Binary binary = session.getValueFactory().createBinary(inputStream);
