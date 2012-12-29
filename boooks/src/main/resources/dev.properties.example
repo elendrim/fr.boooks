@@ -1,0 +1,17 @@
+
+jdbc.database=org.hibernate.dialect.MySQL5Dialect
+jdbc.showSql=true
+
+jcr.url=http://localhost:8081/server
+
+mail.host=mail.gandi.net
+mail.port=587
+mail.protocol=smtp
+mail.username=no-reply@boooks.fr
+mail.password=NoGoGrBo
+mail.javamail.mail.smtp.auth=true
+mail.javamail.mail.smtp.starttls.enable=true
+mail.javamail.mail.smtp.quitwait=false
+
+mail.activation.url=http://localhost:8080/boooks/user/activation.htm?email={0}&tempkey={1}
+          

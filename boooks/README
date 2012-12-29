@@ -42,14 +42,17 @@ Add a resource in tomcat configuration context.xml
 		testWhileIdle="false"/>                           
 
 
+
 Create a propertie =>
- - You name/pseudo will be $name$
- - copie the dev.propertie to $name$_dev.propertie , ajust the values in it
+ - copie the dev.propertie.example to dev.propertie , ajust the values in it
  - Add a context-param in web.xml (changing the $name$)
   <context-param>
-		 <param-name>spring.profiles.active</param-name>
-		 <param-value>$name$_dev</param-value>
-	 </context-param>
+	<param-name>spring.profiles.active</param-name>
+	<param-value>dev</param-value>
+  </context-param>
+
+
+
 
 
 ** Run Jackrabbit
