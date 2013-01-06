@@ -2,6 +2,8 @@ package org.boooks.db.entity;
 
 
 import java.util.Date;
+import java.util.List;
+
 import javax.persistence.*;
 
 @Entity
@@ -30,6 +32,9 @@ public class MainComment {
 	@JoinColumn(name="USER_ID")
 	private UserEntity user;
 
+	@OneToMany(mappedBy="mainComment", fetch=FetchType.LAZY)
+	private List<SubComment> subComments;
+	
 	public Long getId() {
 		return id;
 	}
@@ -76,6 +81,14 @@ public class MainComment {
 
 	public void setUser(UserEntity user) {
 		this.user = user;
+	}
+
+	public List<SubComment> getSubComments() {
+		return subComments;
+	}
+
+	public void setSubComments(List<SubComment> subComments) {
+		this.subComments = subComments;
 	}
 	
 	

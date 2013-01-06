@@ -24,6 +24,7 @@ public class SubComment {
 	private UserEntity user;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
+	
 	@JoinColumn(name="MAIN_COMMENT_ID")
 	private MainComment mainComment;
 

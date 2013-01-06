@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
@@ -7,42 +8,53 @@
 
 <html>
 <head>
-	<title>Rechercher</title>
+<title>Rechercher</title>
 </head>
-    
-<body>
 
+
+<body>
 
 	<h1>Liste des Commentaires</h1>
 	<table class="table table-striped table-hover">
-		<thead>
-			<tr>
-				<td>title</td>
-				<td>comment</td>
-			</tr>
-		</thead>
 		<tbody>
-			<c:forEach items="${commentList}" var="mainComment">
-				<tr data-id="${mainComment.id}">
+			<c:forEach items="${mainCommentList}" var="mainComment">
+				<tr data-id="main_comment_${mainComment.id}">
 					<td>
-						<table>
-							<tr>
-								<td>at <fmt:formatDate value="${mainComment.modifDate}" pattern="dd MMMMM yyyy HH:mm:ss"/></td>
-								<td>from ${mainComment.user.lastname}</td>
-								<td>${mainComment.title}</td>
-							</tr>
-							<tr>
-								<td colspan="3">${mainComment.text}</td>
-							</tr>
-						<td>${book.title}</td>
-					</table>
-					<br/>
+						<span class="text-info" style="font-size:30px">${mainComment.title}</span> - 
+						<a href="user/id=${subComment.user.id}">
+							${mainComment.user.firstname} ${mainComment.user.lastname}
+						</a> <span class="muted">
+							<fmt:formatDate	value="${mainComment.modifDate}" pattern="dd MMMMM yyyy HH:mm:ss" />
+						</span>
+					</td>
+				</tr>
+				<tr>
+					<td>${mainComment.text}</td>
+				</tr>
+
+				<c:forEach items="${mainComment.subComments}" var="subComment">
+					<tr>
+						<td>${subComment.text} - <a
+							href="user/id=${subComment.user.id}">
+								${subComment.user.firstname} ${subComment.user.lastname} </a> <span
+							class="muted"><fmt:formatDate
+									value="${subComment.modifDate}"
+									pattern="dd MMMMM yyyy HH:mm:ss" /></span>
+							
+						</td>
+					</tr>
+				</c:forEach>
+
+				<tr>
+					<td>
+						<button class="btn btn-mini btn-primary" type="button">Respond</button>
+						<br/><br/><br/><br/>
 					</td>
 				</tr>
 			</c:forEach>
 		</tbody>
 	</table>
-	
+
 
 </body>
 </html>
