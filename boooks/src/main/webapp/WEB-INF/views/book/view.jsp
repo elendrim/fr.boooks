@@ -87,6 +87,8 @@
 			  
 			  <dt>Formats disponibles</dt>
 			  <dd><c:forEach items="${booksMimeTypeList}" var="type" varStatus="varStatus" ><c:if test="${varStatus.index > 0}">,</c:if> ${type}</c:forEach></dd>
+			   <dt>Nombre de page</dt>
+			  <dd>${book.nbPage}</dd>
 			  
 			  <dt>Prix</dt>
 			  <dd>${book.price} €</dd>

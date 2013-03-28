@@ -50,7 +50,10 @@
 			    return false;
 		 
 		    });
-		 
+		    
+		    
+		    $('#nb-page-info').popover();
+		    
 		});
 
 	</script>
@@ -108,8 +111,27 @@
     	<div class="control-group">
     		<label class="control-label" for="NbPage">Nombre de page</label>
     		<div class="controls">
-    			<form:input path="nbPage" />
+    			
+    			
+				<form:input path="nbPage" cssClass="span2" />
+				
+				<a	id="nb-page-info" 
+    				data-original-title="Nombre de page" 
+    				data-toggle="popover" 
+    				data-trigger="hover"
+    				data-html="true"
+    				data-content="Les prix sont fixés en fonction de la taille de l’ouvrage :<br />
+						- Moins de 10 pages : 0,99€<br />
+						- Entre 11 et 50 pages : 1,99€<br />
+						- Entre 51 et 100 pages : 2,99€<br />
+						- Entre 101 et 150 pages : 3,99€<br />
+						- 151 pages et plus : 4,99€<br />"
+    				data-placement="right"> 
+    				<i class="icon-info-sign" ></i>
+	    		</a>
+				
     			<form:errors path="nbPage" cssClass="help-inline"/>
+    			
     		</div>
     	</div>
     	<div class="control-group">
