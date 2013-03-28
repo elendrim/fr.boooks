@@ -5,22 +5,28 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <html>
-<body>
-
+<head>
+	<title>Redirect</title>
 	<script>
-		//alert("Payment Successful");
-		// add relevant message above or remove the line if not required
+		
 		window.onload = function(){
-			if(window.opener){ 
+			
+			parent.location.reload();
+			
+			if(window.opener){
 				window.close();
-			} else { 
-				if( top.dg.isOpen() == true){ 
+			} else {
+				if(top.dg.isOpen() == true){
 					top.dg.closeFlow();
 					return true;
 				}
 			}
-		};
+		}
 	</script>
+</head>
+<body>
+	<h3>Payment Successful</h3>
+	TODO: Ajouter un lien vers la page a recharger si pas de javascript.
 </body>
 </html>
 			

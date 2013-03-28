@@ -80,6 +80,8 @@ public class BookService implements IBookService {
 		}
 		book.setAuthors(authors);
 		
+		calculPrice(book);
+		
 		/** save the book into DB **/
 		book = bookDAO.save(book);
 		
@@ -114,6 +116,32 @@ public class BookService implements IBookService {
 		book = bookJcrDAO.update(book);
 		
 		return book;
+	}
+	
+	/**
+	 * 5 Prix et rémunération
+	 *		
+	 *	Les prix sont fixés en fonction de la taille de l’ouvrage :
+	 *	
+	 *	- Moins de 10 pages (nouvelles et poésies) : 0,99€/$
+	 *	- Entre 11 et 50 pages : 1,99€/$
+	 *	- Entre 51 et 100 pages : 2,99€/$
+	 *	- Entre 101 et 150 pages : 3,99€/$
+	 *	- 151 pages et plus : 4,99€/$
+	 * 
+	 */
+	private void calculPrice(Book book) {
+		if( book.getNbPage() <= 10 ) {
+			book.setPrice(0.99d);
+		} else if ( book.getNbPage() > 10 && book.getNbPage() <= 50 ) {
+			book.setPrice(1.99d);
+		} else if ( book.getNbPage() > 50 && book.getNbPage() <= 100 ) {
+			book.setPrice(2.99d);
+		} else if ( book.getNbPage() > 100 && book.getNbPage() <= 150 ) {
+			book.setPrice(3.99d);
+		} else if ( book.getNbPage() > 150  ) {
+			book.setPrice(4.99d);
+		}
 	}
 	
 	@Override
@@ -235,6 +263,12 @@ public class BookService implements IBookService {
 	@Override
 	public List<BooksMimeType> getBookMimeType(long id) throws RepositoryException, IOException {
 		return bookJcrDAO.getBookMimeType(id);
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public Page<Book> findBooksByPurchasing(long userId, Pageable pageable) {
+		return bookDAO.findBooksByPurchasing(userId, pageable);
 	}
 
 

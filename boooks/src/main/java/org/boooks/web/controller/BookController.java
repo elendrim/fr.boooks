@@ -16,6 +16,8 @@ import org.apache.commons.lang.StringUtils;
 import org.boooks.db.common.BooksMimeType;
 import org.boooks.db.entity.Author;
 import org.boooks.db.entity.Book;
+import org.boooks.db.entity.Buy;
+import org.boooks.db.entity.BuyPK;
 import org.boooks.db.entity.Genre;
 import org.boooks.db.entity.Type;
 import org.boooks.db.entity.UserEntity;
@@ -23,6 +25,7 @@ import org.boooks.jcr.entity.BookData;
 import org.boooks.jcr.entity.FileData;
 import org.boooks.service.IAuthorService;
 import org.boooks.service.IBookService;
+import org.boooks.service.IBuyService;
 import org.boooks.service.IGenreService;
 import org.boooks.service.ITypeService;
 import org.boooks.service.IUserService;
@@ -72,6 +75,9 @@ public class BookController {
 	@Autowired
     private IAuthorService authorService;
 	
+	@Autowired
+	private IBuyService buyService;
+	
 	@ModelAttribute("genreList")
 	public List<Genre> genreList(){
 		return genreService.getAll();
@@ -89,9 +95,10 @@ public class BookController {
     }
 
     @RequestMapping(value="/view", method = RequestMethod.GET)
-    public String view( @RequestParam long id, ModelMap model) throws RepositoryException, MalformedURLException, IOException {
+    public String view( @RequestParam long id, ModelMap model, Principal principal) throws RepositoryException, MalformedURLException, IOException {
 		
-        Book book = bookService.getBookDbById(id);
+    	
+    	Book book = bookService.getBookDbById(id);
         model.addAttribute("book", book);
         
         try {
@@ -100,6 +107,18 @@ public class BookController {
         } catch (RepositoryException e) {
         	LOGGER.error("Unable to get books mime type list", e);
         }
+        
+        if( principal != null ) {
+        	UserEntity user = userService.findUserByEmail(principal.getName());
+        	BuyPK buyPK = new BuyPK();
+        	buyPK.setBookId(id);
+        	buyPK.setUserId(user.getId());
+        	Buy buy = buyService.getById(buyPK);
+        	if ( buy != null ) {
+        		model.addAttribute("buy", true);
+        	}
+        }
+        
         
         return "book/view";
 		
@@ -313,6 +332,28 @@ public class BookController {
         model.addAttribute("currentIndex", current);
         
         return "book/myPublications";
+    }
+	
+	
+	@RequestMapping(value="/purchases", method = RequestMethod.GET )
+    public String purchases(@RequestParam(defaultValue = "1") int p, ModelMap model, Principal principal) {
+
+		Pageable pageable = new PageRequest(p - 1, PAGE_BOOK_SIZE, Sort.Direction.ASC, "publishDate");
+        
+		UserEntity user = userService.findUserByEmail(principal.getName());
+		
+        Page<Book> bookPage = bookService.findBooksByPurchasing(user.getId(), pageable);
+        
+        int current = bookPage.getNumber() +1 ;
+        int begin = Math.max(1, current - 3);
+        int end = Math.min(begin + 6, bookPage.getTotalPages());
+        
+        model.addAttribute("bookPage", bookPage);
+        model.addAttribute("beginIndex", begin);
+        model.addAttribute("endIndex", end);
+        model.addAttribute("currentIndex", current);
+        
+        return "book/purchases";
     }
 	
 	@RequestMapping(value="/search", method = RequestMethod.GET )

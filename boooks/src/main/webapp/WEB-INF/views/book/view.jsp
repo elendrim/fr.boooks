@@ -4,11 +4,15 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="util" uri="http://boooks.fr/functions"%>
+
 
 <html>
 <head>
 	<title>Book</title>
+	
+	
 	<style type="text/css">
 		.dl-horizontal dt {
 			white-space: normal;
@@ -71,39 +75,69 @@
 			  		<div><a class="author" href="book/author.htm?author=${util:urlEncode(author.name)}">${author.name}</a></div>
 			  	</c:forEach>
 			  </dd>
+			  
 			  <dt>Type</dt>
 			  <dd>${book.type.liType}</dd>
+			  
 			  <dt>Genre</dt>
 			  <dd>${book.genre.liGenre}</dd>
+			  
 			  <dt>Date de publication</dt>
 			  <dd><fmt:formatDate value="${book.publishDate}" pattern="dd MMMMM yyyy HH:mm:ss"/></dd>
+			  
+			  <dt>Formats disponibles</dt>
+			  <dd><c:forEach items="${booksMimeTypeList}" var="type" varStatus="varStatus" ><c:if test="${varStatus.index > 0}">,</c:if> ${type}</c:forEach></dd>
+			  
+			  <dt>Prix</dt>
+			  <dd>${book.price} €</dd>
 			</dl>
 			
 		</div>
 	    
-    	
-    	<div class="control-group">
-    		<div class="controls">
-    			<c:if test="${fn:contains(booksMimeTypeList,'PDF')}">
-    				<form action="rest/book/file/${book.id}/PDF" method="get" ><button class="btn btn-success" ><i class="icon-download icon-white"></i> Télécharger au format PDF</button></form>
-   				</c:if>
-   				<c:if test="${fn:contains(booksMimeTypeList,'EPUB')}">
-    				<form action="rest/book/file/${book.id}/EPUB" method="get" ><button class="btn btn-success" ><i class="icon-download icon-white"></i> Télécharger au format EPUB</button></form>
-    			</c:if>
-    			<c:if test="${fn:contains(booksMimeTypeList,'TEXT')}">
-    				<form action="rest/book/file/${book.id}/TEXT" method="get" ><button class="btn btn-success" ><i class="icon-download icon-white"></i> Télécharger au format TEXT</button></form>
-    			</c:if>
-    		</div>
-    	</div>
-
-<%--     	
-    	<!-- INFO: The post URL "checkout.java" is invoked when clicked on "Pay with PayPal" button.-->
-
-		<form action="paypal/checkout.htm" METHOD="POST">
-			<input type="image" name="paypal_submit" id="paypal_submit"  src="https://www.paypal.com/en_US/i/btn/btn_dg_pay_w_paypal.gif" alt="Pay with PayPal"/>
-		</form>
- --%>    	
-		
+	    
+    	<c:choose>
+    		<c:when test="${buy}">
+    			<!-- Download link -->
+    		
+				<div class="control-group">
+		    		<div class="controls">
+		    			<c:if test="${fn:contains(booksMimeTypeList,'PDF')}">
+		    				<form action="rest/book/file/${book.id}/PDF" method="get" class="form-download"><button class="btn btn-success" ><i class="icon-download icon-white"></i> Télécharger au format PDF</button></form>
+		   				</c:if>
+		   				<c:if test="${fn:contains(booksMimeTypeList,'EPUB')}">
+		    				<form action="rest/book/file/${book.id}/EPUB" method="get" class="form-download"><button class="btn btn-success"  ><i class="icon-download icon-white"></i> Télécharger au format EPUB</button></form>
+		    			</c:if>
+		    			<c:if test="${fn:contains(booksMimeTypeList,'TEXT')}">
+		    				<form action="rest/book/file/${book.id}/TEXT" method="get" class="form-download"><button class="btn btn-success"><i class="icon-download icon-white"></i> Télécharger au format TEXT</button></form>
+		    			</c:if>
+		    		</div>
+		    	</div>    	
+    		</c:when>
+    		<c:otherwise>
+    		
+    			
+    		
+    		 	<sec:authorize  access="isAuthenticated()" var="isAutenticated" /> 
+    		
+    			<c:choose>
+	    			<c:when test="${isAutenticated}">
+	    				<!-- Buy Link -->
+						<div class="control-group">
+				    		<div class="controls">
+				   				<form id="form-paypal" action="paypal/checkout.htm" method="POST" >
+									<input type="hidden" name="bookId" value="${book.id}" />
+									<button class="btn btn-success"  name="paypal_submit" id="paypal_submit" ><i class="icon-download icon-white"></i> Acheter avec Paypal</button>
+								</form>
+				    		</div>
+				    	</div>	
+	    			</c:when>
+	    			<c:otherwise>
+	    				 <i class="icon-exclamation-sign"></i> Vous devez vous <a href="login.htm">identifier</a> pour pouvoir télécharger ce livre.
+	    			</c:otherwise>
+    			</c:choose>
+   				
+    		</c:otherwise>
+    	</c:choose>
 	</div>
 	
 	
@@ -114,13 +148,12 @@
 	
 	
 	<script>
-	
 		var dg = new PAYPAL.apps.DGFlow(
 		{
 			trigger: 'paypal_submit'
-			//expType: 'instant'
-			 //PayPal will decide the experience type for the buyer based on his/her 'Remember me on your computer' option.
-		});
+			//PayPal will decide the experience type for the buyer based on his/her 'Remember me on your computer' option.
+			 
+		}); 
 	
 	</script>
 		

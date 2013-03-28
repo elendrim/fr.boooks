@@ -23,13 +23,14 @@
                   </sec:authorize>
                 </ul>
               </li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Achats <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                  <li><a href="#">Mes achats</a></li>
-                  <li><a href="#">Something else here</a></li>
-                </ul>
-              </li>
+              <sec:authorize  access="isAuthenticated()"> 
+              	<li class="dropdown">
+                	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Achats <b class="caret"></b></a>
+                	<ul class="dropdown-menu">
+                  		<li><a href="book/purchases.htm">Mes achats</a></li>
+                	</ul>
+              	</li>
+              </sec:authorize>
             </ul>
             
             <sec:authorize  access="isAuthenticated()"> 

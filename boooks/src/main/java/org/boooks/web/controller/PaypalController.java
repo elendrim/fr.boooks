@@ -1,21 +1,45 @@
 package org.boooks.web.controller;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.Principal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
+
+import org.boooks.db.entity.Book;
+import org.boooks.db.entity.Buy;
+import org.boooks.db.entity.BuyPK;
+import org.boooks.db.entity.PaypalTransaction;
+import org.boooks.db.entity.UserEntity;
+import org.boooks.jcr.entity.BookData;
+import org.boooks.service.IBookService;
+import org.boooks.service.IBuyService;
+import org.boooks.service.IPaypalFunctions;
+import org.boooks.service.IPaypalTransactionService;
+import org.boooks.service.IUserService;
+import org.boooks.service.impl.PaypalFunctions;
+import org.boooks.web.form.BookForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.paypal.dg.PaypalFunctions;
 
 @Controller
 @RequestMapping("paypal")
@@ -23,8 +47,24 @@ public class PaypalController {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PaypalController.class);
 	
+	@Autowired
+	private IBookService bookService;
+	
+	@Autowired
+	private IUserService userService;
+	
+	@Autowired
+	private IPaypalTransactionService paypalTransactionService;
+	
+	@Autowired
+	private IBuyService buyService;
+	
+	@Autowired
+	private IPaypalFunctions paypalFunctions;
+	
+	
 	@RequestMapping(value="/checkout", method = RequestMethod.POST)
-	public String checkout(Model model, Principal principal) throws UnsupportedEncodingException {
+	public String checkout(@RequestParam Long bookId, Model model, Principal principal, HttpServletRequest request) throws UnsupportedEncodingException, MalformedURLException {
 		
 		// Use "request" to read incoming HTTP headers (e.g. cookies)
 		// and HTML form data (e.g. data the user entered and submitted)
@@ -33,11 +73,15 @@ public class PaypalController {
 		// (e.g. specifying the content type, setting cookies).
 
 		/*
-		 *  The paymentAmount is the total value of ' the purchase. ' ' 
-		 * TODO:  Enter the total Payment Amount within the quotes. ' example :
+		 * The paymentAmount is the total value of ' the purchase. ' '
+		 * Enter the total Payment Amount within the quotes. ' example :
 		 * paymentAmount = "15.00"; 
 		 */
-		String paymentAmount = "1.00";
+		
+		
+		Book book = bookService.getBookDbById(bookId);
+		NumberFormat df = DecimalFormat.getNumberInstance(Locale.US);
+		String paymentAmount = df.format(book.getPrice());
 
 		/*
 		 * '------------------------------------ ' The returnURL is the location
@@ -46,7 +90,15 @@ public class PaypalController {
 		 * Assistant '------------------------------------
 		 */
 
-		String returnURL = "http://localhost:8082/boooks/orderconfirm";
+		
+		URL baseUrl = new URL(request.getScheme(), 
+		        request.getServerName(), 
+		        request.getServerPort(), 
+		        request.getContextPath());
+		
+
+
+		String returnURL = baseUrl.toString() + "/paypal/orderconfirm.htm";
 
 		/*
 		 * '------------------------------------ ' The cancelURL is the location
@@ -55,16 +107,16 @@ public class PaypalController {
 		 * the value entered on the Integration Assistant
 		 * '------------------------------------
 		 */
-		String cancelURL = "http://localhost:8082/boooks/paypal/cancel.htm";
+		String cancelURL = baseUrl.toString() +"/paypal/cancel.htm";
 
 		/*
 		 * '------------------------------------ ' The items hashmap contains
 		 * the details of each item '------------------------------------
-		 * TODO: change "item name" to desired item name
 		 */
 
 		Map<String,String> item = new HashMap<String,String>();
-		item.put("name", "item name");
+		item.put("name", book.getTitle());
+		item.put("itemid", String.valueOf(book.getId()));
 		item.put("amt", paymentAmount);
 		item.put("qty", "1");
 
@@ -74,13 +126,13 @@ public class PaypalController {
 		 * PayPalFunctions.java,
 		 * '-------------------------------------------------
 		 */
-		PaypalFunctions ppf = new PaypalFunctions();
-		Map<String, String> nvp = ppf.setExpressCheckout(paymentAmount, returnURL, cancelURL, item);
-		String strAck = nvp.get("ACK").toString();
+		
+		Map<String, String> nvp = paypalFunctions.setExpressCheckout(paymentAmount, returnURL, cancelURL, item);
+		String strAck = nvp.get("ACK");
 		if (strAck != null && strAck.equalsIgnoreCase("Success")) {
 
 			// ' Redirect to paypal.com
-			String redirectURL = "https://www.sandbox.paypal.com/incontext?token="+ nvp.get("TOKEN").toString();
+			String redirectURL = paypalFunctions.getPaypalDgUrl()+ nvp.get("TOKEN");
 			return "redirect:" + redirectURL;
 			
 		} else {
@@ -116,12 +168,10 @@ public class PaypalController {
 		 * parameter from Querystring '------------------------------------
 		 */
 		
+		UserEntity user = userService.findUserByEmail(principal.getName());
+		
 	
 		if (token != null) {
-	
-			// IMPORTANT NOTE: Please import Class paypalfunctions if not in the
-			// same package level.
-			// import paypalfunctions;
 	
 			/*
 			 * '------------------------------------ ' this step is required to
@@ -130,11 +180,12 @@ public class PaypalController {
 			 * SetExpressCheckout API call's request values in you database. '
 			 * ------------------------------------
 			 */
-			PaypalFunctions ppf = new PaypalFunctions();
-			Map<String, String> nvp = ppf.getPaymentDetails(token);
+			
+			Map<String, String> nvp = paypalFunctions.getPaymentDetails(token);
 		
-			String strAck = nvp.get("ACK").toString();
+			String strAck = nvp.get("ACK");
 			String finalPaymentAmount = null;
+			String finalPaymentItemId = null;
 			if (strAck != null
 					&& (strAck.equalsIgnoreCase("Success") || strAck
 							.equalsIgnoreCase("SuccessWithWarning"))) {
@@ -142,7 +193,9 @@ public class PaypalController {
 				 * '------------------------------------ ' The paymentAmount is
 				 * the total value of the purchase '
 				 */
-				finalPaymentAmount = nvp.get("AMT").toString();
+				finalPaymentAmount = nvp.get("AMT");
+				
+				finalPaymentItemId = nvp.get("L_PAYMENTREQUEST_0_NUMBER0");
 			}
 			String serverName = request.getServerName();
 	
@@ -154,10 +207,10 @@ public class PaypalController {
 			 * '-------------------------------------------------
 			 */
 	
-			nvp = ppf.confirmPayment(token, payerId, finalPaymentAmount, serverName);
+			nvp = paypalFunctions.confirmPayment(token, payerId, finalPaymentAmount, serverName);
 			
 			
-			strAck = nvp.get("ACK").toString();
+			strAck = nvp.get("ACK");
 			
 			
 			if (strAck != null
@@ -178,37 +231,42 @@ public class PaypalController {
 				 * *******************************************************
 				 */
 	
+				PaypalTransaction paypalTransaction = new PaypalTransaction();
+				
+				paypalTransaction.setFinalPaymentAmount(finalPaymentAmount);
+				paypalTransaction.setFinalPaymentItemId(finalPaymentItemId);
+				
 				// Unique transaction ID of the payment.
 				// Note: If the PaymentAction of the request was Authorization or Order, this value
 				// is your AuthorizationID for use with the Authorization & Capture APIs.
-				String transactionId = nvp.get("PAYMENTINFO_0_TRANSACTIONID");
+				paypalTransaction.setTransactionId( nvp.get("PAYMENTINFO_0_TRANSACTIONID") );
 
 				
 				// The type of transaction Possible values:
 				// l cart l express-checkout
-				String transactionType = nvp.get("PAYMENTINFO_0_TRANSACTIONTYPE"); 
+				paypalTransaction.setTransactionType( nvp.get("PAYMENTINFO_0_TRANSACTIONTYPE") ); 
 																			
 				// Indicates whether the payment is instant or delayed.
 				// Possible values:
 				// l none l echeck l instant
-				String paymentType = nvp.get("PAYMENTINFO_0_PAYMENTTYPE");
+				paypalTransaction.setPaymentType( nvp.get("PAYMENTINFO_0_PAYMENTTYPE") );
 				
 				// Time/date stamp of payment
-				String orderTime = nvp.get("PAYMENTINFO_0_ORDERTIME");
+				paypalTransaction.setOrderTime( nvp.get("PAYMENTINFO_0_ORDERTIME") );
 														
 				// The final amount charged, including any shipping and taxes from your Merchant Profile.
-				String amt = nvp.get("PAYMENTINFO_0_AMT"); 
+				paypalTransaction.setAmt( nvp.get("PAYMENTINFO_0_AMT") ); 
 														
 				// A three-character currency code for one of the currencies listed in
 				// PayPay-Supported Transactional Currencies. Default:
 				// USD.
-				String currencyCode = nvp.get("PAYMENTINFO_0_CURRENCYCODE"); 
+				paypalTransaction.setCurrencyCode( nvp.get("PAYMENTINFO_0_CURRENCYCODE") ); 
 																
 				// PayPal fee amount charged for the transaction
-				String feeAmt = nvp.get("PAYMENTINFO_0_FEEAMT"); 
+				paypalTransaction.setFeeAmt( nvp.get("PAYMENTINFO_0_FEEAMT") ); 
 																
 				// Tax charged on the transaction.
-				String taxAmt = nvp.get("PAYMENTINFO_0_TAXAMT"); 
+				paypalTransaction.setTaxAmt( nvp.get("PAYMENTINFO_0_TAXAMT") ); 
 				
 				/*
 				 * ' Status of the payment: 'Completed: The payment has been
@@ -217,7 +275,7 @@ public class PaypalController {
 				 * PendingReason element for more information.
 				 */
 	
-				String paymentStatus = nvp.get("PAYMENTINFO_0_PAYMENTSTATUS");
+				paypalTransaction.setPaymentStatus( nvp.get("PAYMENTINFO_0_PAYMENTSTATUS") );
 	
 				/*
 				 * 'The reason the payment is pending: ' none: No pending reason
@@ -241,7 +299,7 @@ public class PaypalController {
 				 * information, contact PayPal customer service.
 				 */
 	
-				String pendingReason = nvp.get("PAYMENTINFO_0_PENDINGREASON");
+				paypalTransaction.setPendingReason( nvp.get("PAYMENTINFO_0_PENDINGREASON") );
 	
 				/*
 				 * 'The reason for a reversal if TransactionType is reversal: '
@@ -257,7 +315,26 @@ public class PaypalController {
 				 * above.
 				 */
 	
-				String reasonCode = nvp.get("PAYMENTINFO_0_REASONCODE");
+				paypalTransaction.setReasonCode( nvp.get("PAYMENTINFO_0_REASONCODE") );
+				
+				paypalTransaction.setDtCre(new Date());
+				paypalTransaction.setUserEntity(user);
+				
+				paypalTransactionService.save(paypalTransaction);
+				
+				if ( "Completed".equals(paypalTransaction.getPaymentStatus()) ) {
+					
+					BuyPK buyPk = new BuyPK();
+					buyPk.setBookId(Long.valueOf(finalPaymentItemId));
+					buyPk.setUserId(user.getId());
+					Buy buy = new Buy();
+					buy.setBuyPk(buyPk);
+					buy.setDtCre(new Date());
+					buy.setPrice(new BigDecimal(finalPaymentAmount));
+					
+					buyService.save(buy);
+					
+				}
 	
 				// Add javascript to close Digital Goods frame. You may want to
 				// add more javascript code to

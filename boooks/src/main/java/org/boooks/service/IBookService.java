@@ -58,6 +58,9 @@ public interface IBookService {
 	@Transactional
 	List<BooksMimeType> getBookMimeType(long id) throws RepositoryException, IOException ;
 
+	@Transactional
+	Page<Book> findBooksByPurchasing(long userId, Pageable pageable);
+
 	
 
 }

@@ -5,16 +5,14 @@ import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.Principal;
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
-import java.util.Iterator;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletResponse;
 
@@ -24,30 +22,96 @@ import org.apache.tika.mime.MimeType;
 import org.apache.tika.mime.MimeTypeException;
 import org.boooks.db.common.BooksMimeType;
 import org.boooks.db.common.ScaleUtils;
+import org.boooks.db.entity.Buy;
+import org.boooks.db.entity.BuyPK;
+import org.boooks.db.entity.UserEntity;
 import org.boooks.jcr.entity.BookData;
 import org.boooks.jcr.entity.FileData;
 import org.boooks.service.IBookService;
+import org.boooks.service.IBuyService;
+import org.boooks.service.IUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
 @RequestMapping("book")
 public class BookRestController {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(BookRestController.class);
+	
+	@Autowired
+	private IUserService userService;
 
 	@Autowired
-    private IBookService bookService;
+	private IBookService bookService;
+	
+	@Autowired
+    private IBuyService buyService;
+	
+	@SuppressWarnings("serial")
+	@ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+	public class UnauthorizedException extends RuntimeException {
+	}
+	
+	@SuppressWarnings("serial")
+	@ResponseStatus(value = HttpStatus.PAYMENT_REQUIRED)
+	public class PaymentRequiredException extends RuntimeException {
+	}
+	
+	
+	@RequestMapping(
+			value = "/candownload/{id}/{format}", 
+			method = RequestMethod.GET,
+			produces="application/json"
+		)
+	public @ResponseBody Boolean candownload(@PathVariable("id") Long id, @PathVariable("format") String format, Principal principal)  {
+		
+		if ( principal == null ) {
+			throw new UnauthorizedException();
+		}
+		UserEntity user = userService.findUserByEmail(principal.getName());
+		
+		BuyPK buyId = new BuyPK();
+		buyId.setBookId(id);
+		buyId.setUserId(user.getId());
+        Buy buy = buyService.getById(buyId);
+        
+        if ( buy == null ) {
+        	throw new PaymentRequiredException();
+        }
+    	
+        return Boolean.TRUE; 
+	}
 	
 	@RequestMapping(value = "/file/{id}/{format}", method = RequestMethod.GET)
-	public void getFile(@PathVariable("id") Long id, @PathVariable("format") String format, HttpServletResponse response) throws RepositoryException, IOException, MimeTypeException {
+	public void getFile(@PathVariable("id") Long id, @PathVariable("format") String format, Principal principal, HttpServletResponse response) throws RepositoryException, IOException, MimeTypeException {
 	    // get your file as InputStream
+		
+		if ( principal == null ) {
+			throw new UnauthorizedException();
+		}
+		UserEntity user = userService.findUserByEmail(principal.getName());
+		
+		BuyPK buyId = new BuyPK();
+		buyId.setBookId(id);
+		buyId.setUserId(user.getId());
+        Buy buy = buyService.getById(buyId);
+        
+        if ( buy == null ) {
+        	throw new PaymentRequiredException();
+        }
+    	
 		
 		BooksMimeType booksMimeType = BooksMimeType.valueOf(format);
 		BookData bookData = bookService.getBookData(id, booksMimeType.getMimeType() );

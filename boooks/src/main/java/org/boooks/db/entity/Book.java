@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -43,8 +44,11 @@ public class Book {
 	@Column(name="RESUME", length = 10000)
 	private String resume;
 	
-	@Column(name="NB_PAGE")
+	@Column(name="NB_PAGE", nullable=false)
 	private int nbPage;
+	
+	@Column(name="PRICE", nullable=false)
+	private double price;
 
 	// TODO : Remplacer le manyToMany par un OneToMany, si on veut par exemple définir
 	// par exemple le role d'un auteur : Traducteur, Auteur, second ecrivain ..
@@ -64,6 +68,9 @@ public class Book {
 
 	@Column(name="PUBLISH_DATE", nullable=false)
 	private Date publishDate;
+	
+	@OneToMany(mappedBy="book", fetch=FetchType.LAZY)
+	public List<Buy> buyes;
 
 	public String getDescription() {
 		return description;
@@ -151,6 +158,22 @@ public class Book {
 
 	public void setAuthors(List<Author> authors) {
 		this.authors = authors;
+	}
+	
+	public double getPrice() {
+		return price;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
+	}
+	
+	public List<Buy> getBuyes() {
+		return buyes;
+	}
+
+	public void setBuyes(List<Buy> buyes) {
+		this.buyes = buyes;
 	}
 
 }

@@ -21,7 +21,7 @@
     <li data-id="${book.id}" class="span2">
     	<div class="thumbnail book">
     		<a href="book/view.htm?id=${book.id}">
-	    		<img src="rest/book/cover/${book.id}?w=160" onerror="this.src='static/img/tango/Office-book.svg';" width="160" alt="cover">
+	    		<img src="rest/book/cover/${book.id}?w=160" onerror="this.src='static/img/tango/Office-book_medium.png';" width="160" alt="cover">
 	    	</a>
 	    	<div class="details">
 	    		<div>

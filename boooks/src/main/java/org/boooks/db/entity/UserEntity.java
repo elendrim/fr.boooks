@@ -54,6 +54,9 @@ public class UserEntity {
 	@OneToMany(mappedBy="user", fetch=FetchType.LAZY)
 	private List<Book> books;
 	
+	@OneToMany(mappedBy="userEntity", fetch=FetchType.LAZY)
+	private List<Buy> buyes;
+	
 	public String getPassword() {
 		return password;
 	}

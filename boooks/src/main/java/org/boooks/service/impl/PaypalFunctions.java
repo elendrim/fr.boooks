@@ -1,12 +1,4 @@
-package com.paypal.dg;
-
-/**
- * Created by IntelliJ IDEA.
- * User: lhuynh
- * Date: Dec 6, 2007
- * Time: 5:06:52 PM
- * To change this template use File | Settings | File Templates.
- */
+package org.boooks.service.impl;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -22,72 +14,35 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import javax.servlet.http.HttpServletResponse;
+import org.boooks.service.IPaypalFunctions;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
-public class PaypalFunctions {
-
+@Component
+public class PaypalFunctions implements IPaypalFunctions {
+	
+	@Value("${paypal.apiusername}") 
 	private String gv_APIUserName;
+	
+	@Value("${paypal.apipassword}")
 	private String gv_APIPassword;
+	
+	@Value("${paypal.apisignature}")
 	private String gv_APISignature;
 
+	@Value("${paypal.apiendpoint}")
 	private String gv_APIEndpoint;
-	private String gv_BNCode;
-
+	
+	@Value("${paypal.version}")
 	private String gv_Version;
-	private String gv_nvpHeader;
-	private String gv_ProxyServer;
-	private String gv_ProxyServerPort;
-	private int gv_Proxy;
-	private boolean gv_UseProxy;
-	private String PAYPAL_URL;
+	
+	@Value("${paypal.url}")
+	private String gv_PaypalUrl;
+	
+	@Value("${paypal.dgurl}")
+	private String gv_PaypalDgUrl;
 
-	public PaypalFunctions() {// lhuynh - Actions to be Done on init of this
-								// class
-
-		// Replace <API_USERNAME> with your API Username
-		// Replace <API_PASSWORD> with your API Password
-		// Replace <API_SIGNATURE> with your Signature
-		gv_APIUserName = "seller_1354576660_biz_api1.boooks.fr";
-		gv_APIPassword = "1354576683";
-		gv_APISignature = "A--8MSCLabuvN8L.-MHjxC9uypBtApGbmswVBZDMeaUxksN9dt0egdT8";
-
-		boolean bSandbox = true;
-
-		/*
-		 * Servers for NVP API Sandbox: https://api-3t.sandbox.paypal.com/nvp
-		 * Live: https://api-3t.paypal.com/nvp
-		 */
-
-		/*
-		 * Redirect URLs for PayPal Login Screen Sandbox:
-		 * https://www.sandbox.paypal
-		 * .com/webscr&cmd=_express-checkout&token=XXXX Live:
-		 * https://www.paypal.
-		 * com/cgi-bin/webscr?cmd=_express-checkout&token=XXXX
-		 */
-		String PAYPAL_DG_URL = null;
-		if (bSandbox == true) {
-			gv_APIEndpoint = "https://api-3t.sandbox.paypal.com/nvp";
-			PAYPAL_URL = "https://www.sandbox.paypal.com/webscr?cmd=_express-checkout&token=";
-			PAYPAL_DG_URL = "https://www.sandbox.paypal.com/incontext?token=";
-		} else {
-			gv_APIEndpoint = "https://api-3t.paypal.com/nvp";
-			PAYPAL_URL = "https://www.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=";
-			PAYPAL_DG_URL = "https://www.paypal.com/incontext?token=";
-		}
-
-		String HTTPREQUEST_PROXYSETTING_SERVER = "";
-		String HTTPREQUEST_PROXYSETTING_PORT = "";
-		boolean USE_PROXY = false;
-
-		gv_Version = "84";
-
-		// WinObjHttp Request proxy settings.
-		gv_ProxyServer = HTTPREQUEST_PROXYSETTING_SERVER;
-		gv_ProxyServerPort = HTTPREQUEST_PROXYSETTING_PORT;
-		gv_Proxy = 2; // 'setting for proxy activation
-		gv_UseProxy = USE_PROXY;
-
+	public PaypalFunctions() {
 	}
 
 	/*********************************************************************************
@@ -102,6 +57,7 @@ public class PaypalFunctions {
 	 * Output: Returns a HashMap object containing the response from the server.
 	 * @throws UnsupportedEncodingException 
 	 *********************************************************************************/
+	@Override
 	public Map<String,String> setExpressCheckout(String paymentAmount, String returnURL,
 			String cancelURL, Map<String,String> item) throws UnsupportedEncodingException {
 
@@ -126,6 +82,7 @@ public class PaypalFunctions {
 				+ "&PAYMENTREQUEST_0_CURRENCYCODE=" + currencyCodeType
 				+ "&REQCONFIRMSHIPPING=0" + "&NOSHIPPING=1"
 				+ "&L_PAYMENTREQUEST_0_NAME0=" + item.get("name")
+				+ "&L_PAYMENTREQUEST_0_NUMBER0=" + item.get("itemid")
 				+ "&L_PAYMENTREQUEST_0_AMT0=" + item.get("amt")
 				+ "&L_PAYMENTREQUEST_0_QTY0=" + item.get("qty")
 				+ "&L_PAYMENTREQUEST_0_ITEMCATEGORY0=Digital";
@@ -138,7 +95,7 @@ public class PaypalFunctions {
 
 		Map<String, String> nvp = httpcall("SetExpressCheckout", nvpstr);
 
-		String strAck = nvp.get("ACK").toString();
+		String strAck = nvp.get("ACK");
 		if ("Success".equalsIgnoreCase(strAck)) {
 			return nvp;
 		} else if ( "Failure".equalsIgnoreCase(strAck) ){
@@ -157,6 +114,7 @@ public class PaypalFunctions {
 	 * 
 	 * Output: Returns a HashMap object containing the response from the server.
 	 *********************************************************************************/
+	@Override
 	public Map<String, String> getPaymentDetails(String token) {
 		/*
 		 * Build a second API request to PayPal, using the token as the ID to
@@ -172,7 +130,7 @@ public class PaypalFunctions {
 		 */
 
 		Map<String, String> nvp = httpcall("GetExpressCheckoutDetails", nvpstr);
-		String strAck = nvp.get("ACK").toString();
+		String strAck = nvp.get("ACK");
 		
 		if (strAck != null
 				&& (strAck.equalsIgnoreCase("Success") || strAck
@@ -190,6 +148,7 @@ public class PaypalFunctions {
 	 * 
 	 * Output: Returns a HashMap object containing the response from the server.
 	 *********************************************************************************/
+	@Override
 	public Map<String, String> confirmPayment(String token, 
 			String payerID, 
 			String finalPaymentAmount, 
@@ -221,7 +180,7 @@ public class PaypalFunctions {
 		 * the resulting errors
 		 */
 		Map<String, String> nvp = httpcall("DoExpressCheckoutPayment", nvpstr);
-		String strAck = nvp.get("ACK").toString();
+		String strAck = nvp.get("ACK");
 		if (strAck != null
 				&& (strAck.equalsIgnoreCase("Success") || strAck
 						.equalsIgnoreCase("SuccessWithWarning"))) {
@@ -236,7 +195,7 @@ public class PaypalFunctions {
 	 * methodName is name of API method. @ nvpStr is nvp string. returns a NVP
 	 * string containing the response from the server.
 	 *********************************************************************************/
-	public Map<String, String> httpcall(String methodName, String nvpStr) {
+	private Map<String, String> httpcall(String methodName, String nvpStr) {
 
 		String version = "2.3";
 		String agent = "Mozilla/4.0";
@@ -301,7 +260,7 @@ public class PaypalFunctions {
 	 * pairs of the string.
 	 * @throws UnsupportedEncodingException 
 	 *********************************************************************************/
-	public Map<String, String> deformatNVP(String pPayload) throws UnsupportedEncodingException {
+	private Map<String, String> deformatNVP(String pPayload) throws UnsupportedEncodingException {
 		Map<String, String> nvp = new HashMap<String, String>();
 		StringTokenizer stTok = new StringTokenizer(pPayload, "&");
 		while (stTok.hasMoreTokens()) {
@@ -316,18 +275,9 @@ public class PaypalFunctions {
 		return nvp;
 	}
 
-	/*********************************************************************************
-	 * RedirectURL: Function to redirect the user to the PayPal site token is
-	 * the parameter that was returned by PayPal returns a HashMap object
-	 * containing all the name value pairs of the string.
-	 *********************************************************************************/
-	public void RedirectURL(HttpServletResponse response, String token) {
-		String payPalURL = PAYPAL_URL + token;
-
-		// response.sendRedirect( payPalURL );
-		response.setStatus(302);
-		response.setHeader("Location", payPalURL);
-		response.setHeader("Connection", "close");
+	@Override
+	public String getPaypalDgUrl() {
+		return gv_PaypalDgUrl;
 	}
 
 	// end class
