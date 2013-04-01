@@ -24,8 +24,9 @@ public class SubComment {
 	private UserEntity user;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
+	
 	@JoinColumn(name="MAIN_COMMENT_ID")
-	private UserEntity mainComment;
+	private MainComment mainComment;
 
 	public Long getId() {
 		return id;
@@ -59,11 +60,11 @@ public class SubComment {
 		this.user = user;
 	}
 
-	public UserEntity getMainComment() {
+	public MainComment getMainComment() {
 		return mainComment;
 	}
 
-	public void setMainComment(UserEntity mainComment) {
+	public void setMainComment(MainComment mainComment) {
 		this.mainComment = mainComment;
 	}
 

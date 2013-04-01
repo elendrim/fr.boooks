@@ -28,7 +28,6 @@ public class BoookServiceTest extends AbstractTransactionalJUnit4SpringContextTe
 		Book book = bookService.getBookDbById(5l);
 		
 		assertEquals(5l, book.getId().longValue());
-		
 	}
 
 }

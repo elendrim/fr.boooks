@@ -1,24 +1,58 @@
-package org.boooks.utils;
+package org.boooks.datageneration;
 
-import org.fluttercode.datafactory.impl.DataFactory;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-public class BoooksDataFactory {
+import org.apache.commons.lang.RandomStringUtils;
 
-	public BoooksDataFactory(){
-		this(true);
+public class DataGenerator extends BaseDataGenerator {
+
+	public DataGenerator(){super();}	
+	public DataGenerator(boolean b) {super(b);}
+	
+	public String getUniqueEmailAddress(){
+		String random = RandomStringUtils.randomAlphanumeric(5);
+		return random + this.getEmailAddress();
 	}
 
-	public DataFactory df = new DataFactory();
+	public Boolean getBoolean(){
+		return this.chance(50);
+	}
 
+	public Date getDate(String s) throws ParseException{
+		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy/MM/dd kk:mm:ss");
+		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy/MM/dd");
 
-	public BoooksDataFactory(boolean randomize){
-		if(randomize){
-			df.randomize((new java.util.Random()).nextInt());
+		try {
+			return sdf1.parse(s);
+		} catch (ParseException e) {
+			return sdf2.parse(s);
 		}
+
+
+	}
+
+	//sometimes, we need unig values, everytime
+	private static Integer uniqifier;
+	private static Long dateRun;
+
+	static {
+		 dateRun = new Date().getTime();
+		 uniqifier = 0;
+	}
+
+	public String getUniqString(){
+		uniqifier += 1;
+		return dateRun.toString() + uniqifier.toString();
+	}
+
+	public Long getUnigLong(){
+		uniqifier += 1;
+		return (dateRun * 1000) + uniqifier;	
 	}
 	
-	
-	
+
 	protected String[] action = {
 			"danse à",				"et le crime de",				"au mytère de",
 			"raconte la guerre de", "se la raconte à",				"au temps de",
@@ -58,5 +92,7 @@ public class BoooksDataFactory {
 	public String getText(int nbWordsMin, int nbWordsMax){
 		return getText(this.df.getNumberBetween(nbWordsMin, nbWordsMax));
 	}
-
+	
+	
+	
 }
