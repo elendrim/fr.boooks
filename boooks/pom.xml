@@ -158,11 +158,6 @@
             <version>${hibernate.version}</version>
         </dependency>
         
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>${hibernate.version}</version>
-        </dependency>
         
         <!-- hibernate validator -->
         <dependency>
@@ -254,12 +249,6 @@
 		</dependency>
 	 
 		<!-- Apache Commons Upload --> 
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.4</version>
-		</dependency>
-		
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>

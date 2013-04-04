@@ -110,3 +110,16 @@ cd /usr/share/tomcat7/conf/
 sudo nano context.xml 
 URIEncoding="UTF-8" >> a ajouté sur tous les connecteurs
 
+
+** PAYPAL Accompte **
+
+The Sandbox test site (https://www.sandbox.paypal.com/)
+The Sandbox Accounts page (accessed through https://developer.paypal.com)
+
+
+Compte paypal pour utilisateur
+buyer@boooks.fr
+buyer%buyer
+
+business@boooks.fr
+business%business
