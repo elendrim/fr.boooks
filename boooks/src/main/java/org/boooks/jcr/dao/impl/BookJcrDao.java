@@ -5,10 +5,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import javax.jcr.Binary;
 import javax.jcr.Node;
@@ -21,8 +23,10 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.RowIterator;
+import javax.jcr.version.VersionManager;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.commons.JcrUtils;
 import org.boooks.db.common.BooksMimeType;
 import org.boooks.db.entity.Author;
@@ -67,17 +71,13 @@ public class BookJcrDao implements IBookJcrDAO {
 	private  String jcrUrl;
 
 	
-	static private String sanitize(String s){
-		return s.replace(":", "_");
+	private static String sanitize(String s){
+		s = s.replace(":", "-");
+		s = s.replace(" ", "-");
+		s = s.replace("_", "-");
+		return s;
 	}
 	
-	static private String sanitize(BookData bd){
-		return sanitize(bd.getFilename());
-	}
-	
-	static private String sanitize(FileData fd){
-		return sanitize(fd.getFilename());
-	}
 	
 	
 	@Override
@@ -93,9 +93,11 @@ public class BookJcrDao implements IBookJcrDAO {
     		
     		
     		Node root = session.getRootNode(); 
-    		
+//    		UUID uuid = UUID.randomUUID();
+//    		
     		// Store metadata content 
-    		Node node = root.addNode("book");
+    		Node node = root.addNode(sanitize(book.getTitle()));
+    		node.addMixin("mix:versionable");
     		node.setProperty("id", book.getId());
     		node.setProperty("userId", book.getUser().getId());
     		node.setProperty("description", book.getDescription());
@@ -105,30 +107,18 @@ public class BookJcrDao implements IBookJcrDAO {
     		node.setProperty("publishDate", calendar);
     		node.setProperty("title", book.getTitle());
     		node.setProperty("resume", book.getResume());
-    		
-    		if ( book.getAuthors() != null ) {
-    			Node authorsNode = node.addNode("authors");
-    			for (Author author :  book.getAuthors() ) {
-    				Node authorNode = authorsNode.addNode("author");
-    				authorNode.setProperty("name", author.getName());	
-				}
-    		}
-    		
+    		node.setProperty("authors", StringUtils.join(book.getAuthors(), ','));
     		if ( book.getGenre() != null ) {
-    			Node genre = node.addNode("genre");
-    			genre.setProperty("id", book.getGenre().getId() );
-    			genre.setProperty("liGenre", book.getGenre().getLiGenre() );
+    			node.setProperty("genre", book.getGenre().getLiGenre() );
     		}
     		
     		if ( book.getType() != null ) {
-    			Node type = node.addNode("type");
-    			type.setProperty("id", book.getType().getId() );
-    			type.setProperty("liType", book.getType().getLiType() );
+    			node.setProperty("type", book.getType().getLiType() );
     		}
     		
     		// Store files info 
     		for (Entry<BooksMimeType, BookData> entrySet : booksMap.entrySet()) {
-    			Node file = node.addNode(sanitize(entrySet.getValue()),"nt:file");
+    			Node file = node.addNode(sanitize(entrySet.getValue().getFilename()),"nt:file");
         		Node content = file.addNode("jcr:content","nt:resource");
         		inputStream = new ByteArrayInputStream(entrySet.getValue().getBytes());
         		Binary binary = session.getValueFactory().createBinary(inputStream);
@@ -139,7 +129,7 @@ public class BookJcrDao implements IBookJcrDAO {
     		
     		if ( cover != null ) {
     			Node coverNode = node.addNode("cover");
-    			Node file = coverNode.addNode(sanitize(cover),"nt:file");
+    			Node file = coverNode.addNode(sanitize(cover.getFilename()),"nt:file");
         		Node content = file.addNode("jcr:content","nt:resource");
         		inputStream = new ByteArrayInputStream(cover.getBytes());
         		Binary binary = session.getValueFactory().createBinary(inputStream);
@@ -147,8 +137,6 @@ public class BookJcrDao implements IBookJcrDAO {
         		content.setProperty("jcr:mimeType", cover.getMimeType());
         		content.setProperty("jcr:lastModified", Calendar.getInstance());
     		}
-    		
-    		
     		
     		session.save(); 
     		
@@ -187,57 +175,40 @@ public class BookJcrDao implements IBookJcrDAO {
 			QueryResult result = query.execute();
 			RowIterator rowIterator = result.getRows();
 
+			
 			if (rowIterator.hasNext() ) {
 				Node node = rowIterator.nextRow().getNode();
-	    		    		
-				// Store metadata content 
+				    		
+				VersionManager vm = session.getWorkspace().getVersionManager();
+				vm.checkout(node.getPath());
+	
+				if (! node.getName().equals( sanitize(book.getTitle()) )) {
+					session.move(node.getPath(), "/" + sanitize(book.getTitle()));
+				}
+				
+				node.addMixin("mix:versionable");
+	    		node.setProperty("id", book.getId());
+	    		node.setProperty("userId", book.getUser().getId());
 	    		node.setProperty("description", book.getDescription());
 	    		node.setProperty("keywords", book.getKeywords());
-	    		node.setProperty("resume", book.getResume());
+	    		Calendar calendar = Calendar.getInstance();
+	    		calendar.setTime(book.getPublishDate());
+	    		node.setProperty("publishDate", calendar);
 	    		node.setProperty("title", book.getTitle());
+	    		node.setProperty("resume", book.getResume());
+	    		node.setProperty("authors", StringUtils.join(book.getAuthors(), ','));
+	    		if ( book.getGenre() != null ) {
+	    			node.setProperty("genre", book.getGenre().getLiGenre() );
+	    		}
 	    		
+	    		if ( book.getType() != null ) {
+	    			node.setProperty("type", book.getType().getLiType() );
+	    		}
 	    		
-	    		
-//	    		
-//	    		
-//	    		Node authorsNode = JcrUtils.getOrAddNode(node, "authors");
-//	    		
-//	    		if ( book.getAuthors() != null &&  !book.getAuthors().isEmpty() ) {
-//	    			while ( authorsNode.hasNode("author") ) {
-//	    				authorsNode.getNode("author").remove();
-//	    			}
-//	    			for (Author author :  book.getAuthors() ) {
-//	    				Node authorNode = authorsNode.addNode("author");
-//	    				authorNode.setProperty("name", author.getName());	
-//					}
-//	    		} else {
-//	    			while ( authorsNode.hasNode("author") ) {
-//	    				authorsNode.getNode("author").remove();
-//	    			}
-//	    		}
-//	    		
-//	    		if ( book.getGenre() != null ) {
-//	    			Node genre = JcrUtils.getOrAddNode(node, "genre");
-//	    			genre.setProperty("id", book.getGenre().getId() );
-//	    			genre.setProperty("liGenre", book.getGenre().getLiGenre() );
-//	    		} else {
-//	    			if ( node.hasNode("genre")) {
-//	    				node.getNode("genre").remove();
-//	    			}
-//	    		}
-//	    		
-//	    		if ( book.getType() != null ) {
-//	    			Node type = JcrUtils.getOrAddNode(node,"type");
-//	    			type.setProperty("id", book.getType().getId() );
-//	    			type.setProperty("liType", book.getType().getLiType() );
-//	    		} else {
-//	    			if ( node.hasNode("type") ) {
-//	    				node.getNode("type").remove();
-//	    			}
-//	    		}
-	    		
-	    		session.save(); 
+	    		session.save();
+	    		vm.checkin(node.getPath());
 			}
+    		
     	} catch ( RepositoryException e) {
     		LOGGER.error("Error getting book data", e);
     		throw e;
@@ -267,7 +238,6 @@ public class BookJcrDao implements IBookJcrDAO {
     		expression.append("select * from [nt:unstructured] as book ");
     		expression.append("where book.id = "+ bookId + " ");
     		expression.append("and ischildnode (book, [/]) ");
-    		expression.append("and name(book) = 'book' ");
     		
 			QueryManager queryMgr = session.getWorkspace().getQueryManager();
 			Query query = queryMgr.createQuery(expression.toString(),Query.JCR_SQL2);
@@ -279,6 +249,9 @@ public class BookJcrDao implements IBookJcrDAO {
 				
 				Node node = rowIterator.nextRow().getNode("book");
 				
+				VersionManager vm = session.getWorkspace().getVersionManager();
+				vm.checkout(node.getPath());
+				
 				if ( node.hasNode("cover")) {
     				node.getNode("cover").remove();
     			}
@@ -286,7 +259,7 @@ public class BookJcrDao implements IBookJcrDAO {
 				if ( cover != null ) {
 					Node coverNode = JcrUtils.getOrAddNode(node, "cover");
 					
-	    			Node file = JcrUtils.getOrAddNode(coverNode, sanitize(cover), "nt:file");
+	    			Node file = JcrUtils.getOrAddNode(coverNode, sanitize(cover.getFilename()), "nt:file");
 	        		Node content = JcrUtils.getOrAddNode(file,"jcr:content","nt:resource");
 	        		inputStream = new ByteArrayInputStream(cover.getBytes());
 	        		Binary binary = session.getValueFactory().createBinary(inputStream);
@@ -295,6 +268,7 @@ public class BookJcrDao implements IBookJcrDAO {
 	        		content.setProperty("jcr:lastModified", Calendar.getInstance());
 	    		}
 	    		session.save(); 
+	    		vm.checkin(node.getPath());
 			}
 		} catch ( RepositoryException e) {
     		LOGGER.error("Error getting book data", e);
@@ -330,7 +304,7 @@ public class BookJcrDao implements IBookJcrDAO {
     		expression.append("where  book.id = "+ bookId + " ");
     		expression.append("and content.[jcr:mimeType] = '"+ mimeType +"' ");
     		expression.append("and ischildnode (book, [/]) ");
-    		expression.append("and name(book) = 'book' ");
+    		
     		
     		QueryManager queryMgr = session.getWorkspace().getQueryManager();
 			Query query = queryMgr.createQuery(expression.toString(),Query.JCR_SQL2);
@@ -395,7 +369,7 @@ public class BookJcrDao implements IBookJcrDAO {
     		expression.append("where  book.id = "+ bookId + " ");
     		expression.append("and ischildnode (book, [/]) ");
     		expression.append("and name(cover) = 'cover' ");
-    		expression.append("and name(book) = 'book' ");
+    		
     		
     		QueryManager queryMgr = session.getWorkspace().getQueryManager();
 			Query query = queryMgr.createQuery(expression.toString(),Query.JCR_SQL2);
@@ -522,47 +496,27 @@ public class BookJcrDao implements IBookJcrDAO {
 	    			book.setResume(node.getProperty("resume").getString());
 	    		}
 	    		
-	    		if ( book.getAuthors() != null ) {
-	    			Node authorsNode = node.addNode("authors");
-	    			for (Author author :  book.getAuthors() ) {
-	    				Node authorNode = authorsNode.addNode("author");
-	    				authorNode.setProperty("name", author.getName());	
+	    		if ( node.hasProperty("authors") ) {
+	    			String[] authors =StringUtils.split(node.getProperty("authors").getString(), ",");
+	    			List<Author> authorList = new ArrayList<Author>();
+	    			
+	    			for (String authorname : authors) {
+	    				Author author = new Author();
+    					author.setName(authorname);
+    					authorList.add(author);
 					}
-	    		}
-	    		if ( node.hasNode("authors") ) {
-	    			List<Author> authors = new ArrayList<Author>();
-	    			Node authorsNode = node.getNode("authors");
-	    			if ( authorsNode.hasNode("author") ) {
-	    				Node authorNode = authorsNode.getNode("author");
-	    				if ( authorNode.hasProperty("name") ) {
-	    					String name = authorNode.getProperty("name").getString();
-	    					Author author = new Author();
-	    					author.setName(name);
-	    					authors.add(author);
-	    				}
-	    			}
+	    			
+	    			book.setAuthors(authorList);
 	    		}
 	    		
-	    		if ( node.hasNode("genre") ) {
+	    		if ( node.hasProperty("genre") ) {
 	    			Genre genre = new Genre();
-	    			Node genreNode = node.getNode("genre");
-	    			if ( genreNode.hasProperty("id")) {
-	    				genre.setId(genreNode.getProperty("id").getLong());
-	    			}
-	    			if ( genreNode.hasProperty("liGenre")) {
-	    				genre.setLiGenre(genreNode.getProperty("liGenre").getString());
-	    			}
+	    			genre.setLiGenre(node.getProperty("genre").getString());
 	    			book.setGenre(genre);
 	    		}
-	    		if ( node.hasNode("type") ) {
+	    		if ( node.hasProperty("type") ) {
 	    			Type type = new Type();
-	    			Node typeNode = node.getNode("type");
-	    			if ( typeNode.hasProperty("id") ) {
-	    				type.setId(typeNode.getProperty("id").getLong());
-	    			}
-	    			if ( typeNode.hasProperty("liType")) {
-	    				type.setLiType(typeNode.getProperty("liType").getString());
-	    			}
+	    			type.setLiType(node.getProperty("type").getString());
 	    			book.setType(type);	
 	    		}
 			}
