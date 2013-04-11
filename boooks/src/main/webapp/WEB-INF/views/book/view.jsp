@@ -27,22 +27,23 @@
 <body>
 
 
-	
-	<%-- <div class="container-fluid">
-		<ul class="nav nav-tabs">
-			<li class="active"><a><i class="icon-book"></i> Visualiser</a></li>
-		 	<li class="dropdown">
-		    	<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-		        	<i class="icon-edit" ></i> Editer
-		        	<b class="caret"></b>
-		      	</a>
-			    <ul class="dropdown-menu">
-			      <li><a href="book/edit.htm?id=${book.id}"><i class="icon-pencil"></i> Modifier les informations</a></li>
-			      <li><a href="book/editcover.htm?id=${book.id}"><i class="icon-upload"></i> Modifier la couverture</a></li>
-			    </ul>
-		  	</li>
-		</ul>
-	</div> --%>
+	<c:if test="${isOwner}">
+		<div class="container-fluid">
+			<ul class="nav nav-tabs">
+				<li class="active"><a><i class="icon-book"></i> Visualiser</a></li>
+			 	<li class="dropdown">
+			    	<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+			        	<i class="icon-edit" ></i> Editer
+			        	<b class="caret"></b>
+			      	</a>
+				    <ul class="dropdown-menu">
+				      <li><a href="book/edit.htm?id=${book.id}"><i class="icon-pencil"></i> Modifier les informations</a></li>
+				      <li><a href="book/editcover.htm?id=${book.id}"><i class="icon-upload"></i> Modifier la couverture</a></li>
+				    </ul>
+			  	</li>
+			</ul>
+		</div> 
+	</c:if>
 	
 
 	<div class="container-fluid">

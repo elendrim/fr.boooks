@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +13,6 @@ import java.util.UUID;
 
 import javax.jcr.Binary;
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -93,10 +91,17 @@ public class BookJcrDao implements IBookJcrDAO {
     		
     		
     		Node root = session.getRootNode(); 
-//    		UUID uuid = UUID.randomUUID();
-//    		
-    		// Store metadata content 
-    		Node node = root.addNode(sanitize(book.getTitle()));
+    		
+    		// due to performance issue over 10k node on the same parent node.
+    		UUID uuid = UUID.randomUUID();
+    		String[] digit = uuid.toString().split("-");
+    		Node node0 = JcrUtils.getOrAddNode(root, digit[0]);
+    		Node node1 = JcrUtils.getOrAddNode(node0, digit[1]);
+    		Node node2 = JcrUtils.getOrAddNode(node1, digit[2]);
+    		Node node3 = JcrUtils.getOrAddNode(node2, digit[3]);
+    		Node node4 = JcrUtils.getOrAddNode(node3, digit[4]);
+
+    		Node node = node4.addNode(sanitize(book.getTitle()));
     		node.addMixin("mix:versionable");
     		node.setProperty("id", book.getId());
     		node.setProperty("userId", book.getUser().getId());
@@ -183,7 +188,7 @@ public class BookJcrDao implements IBookJcrDAO {
 				vm.checkout(node.getPath());
 	
 				if (! node.getName().equals( sanitize(book.getTitle()) )) {
-					session.move(node.getPath(), "/" + sanitize(book.getTitle()));
+					session.move(node.getPath(), node.getParent().getPath() + "/" + sanitize(book.getTitle()));
 				}
 				
 				node.addMixin("mix:versionable");
@@ -196,7 +201,14 @@ public class BookJcrDao implements IBookJcrDAO {
 	    		node.setProperty("publishDate", calendar);
 	    		node.setProperty("title", book.getTitle());
 	    		node.setProperty("resume", book.getResume());
-	    		node.setProperty("authors", StringUtils.join(book.getAuthors(), ','));
+	    		StringBuilder authors = new StringBuilder();
+	    		for (int i=0; i<book.getAuthors().size(); i++) {
+	    			if ( i>0 ) {
+	    				authors.append(',');
+	    			}
+	    			authors.append(book.getAuthors().get(i).getName());
+				}
+	    		node.setProperty("authors", authors.toString());
 	    		if ( book.getGenre() != null ) {
 	    			node.setProperty("genre", book.getGenre().getLiGenre() );
 	    		}
@@ -237,7 +249,7 @@ public class BookJcrDao implements IBookJcrDAO {
     		
     		expression.append("select * from [nt:unstructured] as book ");
     		expression.append("where book.id = "+ bookId + " ");
-    		expression.append("and ischildnode (book, [/]) ");
+    		
     		
 			QueryManager queryMgr = session.getWorkspace().getQueryManager();
 			Query query = queryMgr.createQuery(expression.toString(),Query.JCR_SQL2);
@@ -303,7 +315,6 @@ public class BookJcrDao implements IBookJcrDAO {
     		expression.append("inner join [nt:resource] as content on ischildnode(content, file) ");
     		expression.append("where  book.id = "+ bookId + " ");
     		expression.append("and content.[jcr:mimeType] = '"+ mimeType +"' ");
-    		expression.append("and ischildnode (book, [/]) ");
     		
     		
     		QueryManager queryMgr = session.getWorkspace().getQueryManager();
@@ -367,7 +378,6 @@ public class BookJcrDao implements IBookJcrDAO {
     		expression.append("inner join [nt:unstructured] as book on ischildnode(cover, book) ");
     		expression.append("inner join [nt:resource] as content on ischildnode(content, file) ");
     		expression.append("where  book.id = "+ bookId + " ");
-    		expression.append("and ischildnode (book, [/]) ");
     		expression.append("and name(cover) = 'cover' ");
     		
     		
@@ -470,7 +480,7 @@ public class BookJcrDao implements IBookJcrDAO {
 			
 			if (rowIterator.hasNext() ) {
 				Node node = rowIterator.nextRow().getNode();
-	    		    		
+				
 	    		book = new Book();
 	    		if ( node.hasProperty("id") ) {
 	    			book.setId(node.getProperty("id").getLong());

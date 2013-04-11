@@ -12,7 +12,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface IBookDAO extends JpaRepository<Book, Long>, JpaSpecificationExecutor<Book> { 
 	
-	@Query("select b from Book b join fetch b.type join fetch b.genre left join fetch b.authors where b.id = :id")  
+	@Query("select b from Book b  join fetch b.user join fetch b.type join fetch b.genre left join fetch b.authors where b.id = :id")  
 	Book getById(@Param("id") Long id);
 
 	@Query("select b from Book b left join fetch b.authors ")

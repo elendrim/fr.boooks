@@ -21,6 +21,7 @@ import org.boooks.db.entity.BuyPK;
 import org.boooks.db.entity.Genre;
 import org.boooks.db.entity.Type;
 import org.boooks.db.entity.UserEntity;
+import org.boooks.exception.ForbiddenAccessException;
 import org.boooks.jcr.entity.BookData;
 import org.boooks.jcr.entity.FileData;
 import org.boooks.service.IAuthorService;
@@ -40,15 +41,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 
@@ -93,13 +98,21 @@ public class BookController {
         dataBinder.registerCustomEditor(Genre.class, new GenreEditor());
         dataBinder.registerCustomEditor(Type.class, new TypeEditor());
     }
+	
+	
+	@ExceptionHandler(ForbiddenAccessException.class)
+	@ResponseStatus(value=HttpStatus.FORBIDDEN)
+	@ResponseBody
+	public String handleForbiddenAccessException(ForbiddenAccessException ex) {
+        return ex.getMessage();
+	}
 
     @RequestMapping(value="/view", method = RequestMethod.GET)
     public String view( @RequestParam long id, ModelMap model, Principal principal) throws RepositoryException, MalformedURLException, IOException {
 		
     	
     	Book book = bookService.getBookDbById(id);
-        model.addAttribute("book", book);
+    	model.addAttribute("book", book);
         
         try {
 	        List<BooksMimeType> booksMimeTypeList = bookService.getBookMimeType(id);
@@ -116,6 +129,10 @@ public class BookController {
         	Buy buy = buyService.getById(buyPK);
         	if ( buy != null ) {
         		model.addAttribute("buy", true);
+        	}
+        	
+        	if ( user.getId().equals(book.getUser().getId()) ) {
+        		model.addAttribute("isOwner", true);
         	}
         }
         
@@ -225,9 +242,15 @@ public class BookController {
 	
 	
 	@RequestMapping(value="/edit", method = RequestMethod.GET)
-    public String add(@RequestParam long id, ModelMap model, Principal principal) {
+    public String add(@RequestParam long id, ModelMap model, Principal principal) throws ForbiddenAccessException  {
 		
+		UserEntity user = userService.findUserByEmail(principal.getName());
+    	
 		Book book = bookService.getBookDbById(id);
+		
+		if ( !user.getId().equals(book.getUser().getId()) ) {
+    		throw new ForbiddenAccessException();
+    	}
 		
 		BookForm bookForm = new BookForm();
 		bookForm.setId(book.getId());
@@ -250,14 +273,20 @@ public class BookController {
     }
 	
 	@RequestMapping(value="/edit", method = RequestMethod.POST)
-    public String edit(@Valid BookForm bookForm, BindingResult result, ModelMap model,  Principal principal) throws RepositoryException, MalformedURLException {
+    public String edit(@Valid BookForm bookForm, BindingResult result, ModelMap model,  Principal principal) throws RepositoryException, MalformedURLException, ForbiddenAccessException {
 		
 		if ( result.hasErrors() ) {
 			model.addAttribute("bookForm", bookForm);	
 			return "book/edit";
 		}
 		
+		UserEntity user = userService.findUserByEmail(principal.getName());
+		
 		Book book = bookService.getBookDbById(bookForm.getId());
+		
+		if ( !user.getId().equals(book.getUser().getId()) ) {
+    		throw new ForbiddenAccessException();
+    	}
 		
 		book.setTitle(bookForm.getTitle());
 		book.setGenre(genreService.getById(bookForm.getGenre().getId()));
@@ -281,9 +310,15 @@ public class BookController {
     }
 	
 	@RequestMapping(value="/editcover", method = RequestMethod.GET)
-    public String editcover(@RequestParam long id, ModelMap model, Principal principal) {
+    public String editcover(@RequestParam long id, ModelMap model, Principal principal) throws ForbiddenAccessException {
+		
+		UserEntity user = userService.findUserByEmail(principal.getName());
 		
 		Book book = bookService.getBookDbById(id);
+		
+		if ( !user.getId().equals(book.getUser().getId()) ) {
+    		throw new ForbiddenAccessException();
+    	}
 		
 		BookCoverForm bookCoverForm = new BookCoverForm();
 		bookCoverForm.setId(book.getId());
@@ -293,12 +328,20 @@ public class BookController {
     }
 	
 	@RequestMapping(value="/editcover", method = RequestMethod.POST)
-    public String editcover(@Valid BookCoverForm bookCoverForm, BindingResult result, ModelMap model,  Principal principal) throws RepositoryException, MalformedURLException {
+    public String editcover(@Valid BookCoverForm bookCoverForm, BindingResult result, ModelMap model,  Principal principal) throws RepositoryException, MalformedURLException, ForbiddenAccessException {
 		
 		if ( result.hasErrors() ) {
 			model.addAttribute("bookCoverForm", bookCoverForm);	
 			return "book/editcover";
 		}
+		
+		UserEntity user = userService.findUserByEmail(principal.getName());
+		
+		Book book = bookService.getBookDbById(bookCoverForm.getId());
+		
+		if ( !user.getId().equals(book.getUser().getId()) ) {
+    		throw new ForbiddenAccessException();
+    	}
 		
 		FileData coverData = null;
 		if ( bookCoverForm.getFileCover() != null && !bookCoverForm.getFileCover().isEmpty() ) {
