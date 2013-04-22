@@ -102,14 +102,36 @@
     	<div class="control-group">
     		<label class="control-label" for="Type">Type</label>
     		<div class="controls">
-    			<form:select path="type" items="${typeList}" itemLabel="liType" itemValue="id" cssClass="span4" />
+    			<form:select path="type">
+    				<c:forEach items="${typeList}" var="type">
+    					<c:choose>
+    						<c:when test="${bookForm.type.id eq type.id}">
+    							<option selected="selected" value="${type.id}">${type.liType}</option>
+    						</c:when>
+    						<c:otherwise>
+    							<option value="${type.id}">${type.liType}</option>
+    						</c:otherwise>
+    					</c:choose>
+    				</c:forEach>
+    			</form:select>
     			<form:errors path="type" cssClass="help-inline"/>
     		</div>
     	</div>
     	<div class="control-group">
     		<label class="control-label" for="Genre">Genre</label>
     		<div class="controls">
-    			<form:select path="genre" items="${genreList}" itemLabel="liGenre" itemValue="id" cssClass="span4"/>
+    			<form:select path="genre">
+    				<c:forEach items="${genreList}" var="genre">
+    					<c:choose>
+    						<c:when test="${bookForm.genre.id eq genre.id}">
+    							<option selected="selected" value="${genre.id}">${genre.liGenre}</option>
+    						</c:when>
+    						<c:otherwise>
+    							<option value="${genre.id}">${genre.liGenre}</option>
+    						</c:otherwise>
+    					</c:choose>
+    				</c:forEach>
+    			</form:select>
     			<form:errors path="genre" cssClass="help-inline"/>
     		</div>
     	</div>
