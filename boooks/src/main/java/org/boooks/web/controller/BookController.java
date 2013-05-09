@@ -19,6 +19,7 @@ import org.boooks.db.entity.Book;
 import org.boooks.db.entity.Buy;
 import org.boooks.db.entity.BuyPK;
 import org.boooks.db.entity.Genre;
+import org.boooks.db.entity.MainComment;
 import org.boooks.db.entity.Type;
 import org.boooks.db.entity.UserEntity;
 import org.boooks.exception.ForbiddenAccessException;
@@ -28,6 +29,7 @@ import org.boooks.service.IAuthorService;
 import org.boooks.service.IBookService;
 import org.boooks.service.IBuyService;
 import org.boooks.service.IGenreService;
+import org.boooks.service.IMainCommentService;
 import org.boooks.service.ITypeService;
 import org.boooks.service.IUserService;
 import org.boooks.web.form.BookCoverForm;
@@ -83,6 +85,9 @@ public class BookController {
 	@Autowired
 	private IBuyService buyService;
 	
+	@Autowired
+	private IMainCommentService mainCommentService;
+	
 	@ModelAttribute("genreList")
 	public List<Genre> genreList(){
 		return genreService.getAll();
@@ -110,9 +115,12 @@ public class BookController {
     @RequestMapping(value="/view", method = RequestMethod.GET)
     public String view( @RequestParam long id, ModelMap model, Principal principal) throws RepositoryException, MalformedURLException, IOException {
 		
-    	
     	Book book = bookService.getBookDbById(id);
+    	
+//    	List<MainComment> mainCommentList = mainCommentService.findByBookId(book.getId());
+    	
     	model.addAttribute("book", book);
+//    	model.addAttribute("mainCommentList", mainCommentList);
         
         try {
 	        List<BooksMimeType> booksMimeTypeList = bookService.getBookMimeType(id);

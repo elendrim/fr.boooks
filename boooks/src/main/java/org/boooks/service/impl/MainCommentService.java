@@ -9,6 +9,8 @@ import org.boooks.db.entity.MainComment;
 import org.boooks.db.entity.UserEntity;
 import org.boooks.service.IMainCommentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,31 +26,22 @@ public class MainCommentService implements IMainCommentService {
 
 	
 	@Override
-	@Transactional
-	public
-	List<MainComment> getByBook(Book book) {
-		return mainCommentDAO.findByBookId(book.getId());
+	@Transactional(readOnly=true)
+	public Page<MainComment> findByBookId(Long bookId, Pageable pageable) {
+		return mainCommentDAO.findByBookId(bookId, pageable);
 	}
 
 	@Override
-	@Transactional
-	public
-	List<MainComment> getByUser(UserEntity user) {
+	@Transactional(readOnly=true)
+	public List<MainComment> getByUser(UserEntity user) {
 		return mainCommentDAO.findByUserId(user.getId());
 	}
 
 	@Override
-	@Transactional
-	public
-	MainComment save(MainComment mainComment) {
+	@Transactional(readOnly=false)
+	public MainComment save(MainComment mainComment) {
 		return mainCommentDAO.save(mainComment);
 	}
-
-	@Override
-	@Transactional
-	public
-	MainComment update(MainComment mainComment) {
-		return mainCommentDAO.save(mainComment);
-	}
+	
 	
 }

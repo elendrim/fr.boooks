@@ -16,7 +16,7 @@
 	<c:param name="p">1</c:param>
 </c:url>
 <c:url var="lastUrl" value="${url}" >
-	<c:param name="p">${bookPage.totalPages}</c:param>
+	<c:param name="p">${page.totalPages}</c:param>
 </c:url>
 <c:url var="prevUrl" value="${url}"  >
 	<c:param name="p">${currentIndex - 1}</c:param>

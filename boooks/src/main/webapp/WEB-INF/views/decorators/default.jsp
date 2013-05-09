@@ -20,6 +20,7 @@
 	<script src="static/js/jquery-1.8.0.min.js"></script>
 	<script src="static/js/bootstrap.min.js"></script>
 	
+
 	<decorator:head />
 </head>
 <body>

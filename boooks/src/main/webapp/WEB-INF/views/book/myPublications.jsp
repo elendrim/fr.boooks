@@ -5,7 +5,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="util" uri="http://boooks.fr/functions"%>
-<%@ taglib tagdir="/WEB-INF/tags" prefix="h" %>
+<%@ taglib prefix="h" tagdir="/WEB-INF/tags" %>
 
 <html>
 <head>

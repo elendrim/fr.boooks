@@ -23,10 +23,37 @@
 		}
 				
 	</style>
+	<script type="text/javascript">
+		
+		
+		$(document).ready(function(){
+			
+			function afterLoad() {
+				$('#main-comment #comment-pagination .pagination ul li a').on('click', function(e) {
+					var url = $(this).attr("href");
+					$("#main-comment").load(url,  function(e) {
+						afterLoad();
+					});
+					e.preventDefault();
+					return false;
+					
+				});
+			}
+			
+			$("#main-comment").load("comment/list.htm?bookId=${book.id}&p=1", function() {
+				afterLoad();
+			});
+			
+			
+		});
+		
+		
+		
+	</script>
 </head>
 <body>
-
-
+	<sec:authorize  access="isAuthenticated()" var="isAutenticated" />
+	 
 	<c:if test="${isOwner}">
 		<div class="container-fluid">
 			<ul class="nav nav-tabs">
@@ -63,7 +90,7 @@
 					<div class="span9"><h1>${book.title}</h1></div>
 				</div>
 				<div class="row-fluid">
-					<div class="span9"><blockquote>${book.resume}</blockquote></div>
+					<div class="span9" style="text-align: justify;"><blockquote>${book.resume}</blockquote></div>
 				</div>
 			</div>
 			
@@ -117,12 +144,7 @@
 		    	</div>    	
     		</c:when>
     		<c:otherwise>
-    		
-    			
-    		
-    		 	<sec:authorize  access="isAuthenticated()" var="isAutenticated" /> 
-    		
-    			<c:choose>
+    		 	<c:choose>
 	    			<c:when test="${isAutenticated}">
 	    				<!-- Buy Link -->
 						<div class="control-group">
@@ -142,6 +164,29 @@
     		</c:otherwise>
     	</c:choose>
 	</div>
+	
+	
+	<!--Commentaire content-->
+	<hr />
+	<div id="main-comment"></div>
+	
+  	<c:choose>	
+		<c:when test="${(buy or isOwner) and isAutenticated}">
+			
+			<form action="comment/add.htm" name="mainCommentForm" method="post"  >
+				<input type="hidden" name="bookId" value="${book.id}" >
+			 	<textarea name="comment" class="span8" rows="3"></textarea>
+				<button class="btn" type="submit">Ajouter un commentaire</button>
+			</form>
+		</c:when>
+		<c:otherwise>
+			<i class="icon-exclamation-sign"></i> Vous devez vous <a href="login.htm">identifier</a> et avoir acheté le livre pour pouvoir le commenter.
+		</c:otherwise>
+	</c:choose>
+	
+	
+		
+	
 	
 	
 	

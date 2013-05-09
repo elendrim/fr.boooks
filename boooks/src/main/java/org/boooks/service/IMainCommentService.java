@@ -2,15 +2,16 @@ package org.boooks.service;
 
 import java.util.List;
 
-import org.boooks.db.entity.Book;
 import org.boooks.db.entity.MainComment;
 import org.boooks.db.entity.UserEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface IMainCommentService {
 
 	@Transactional
-	List<MainComment> getByBook(Book book);
+	Page<MainComment> findByBookId(Long bookId, Pageable pageable) ;
 	
 	@Transactional
 	List<MainComment> getByUser(UserEntity user);
@@ -18,7 +19,5 @@ public interface IMainCommentService {
 	@Transactional
 	MainComment save(MainComment mainComment);
 	
-	@Transactional
-	MainComment update(MainComment mainComment);
 	
 }
