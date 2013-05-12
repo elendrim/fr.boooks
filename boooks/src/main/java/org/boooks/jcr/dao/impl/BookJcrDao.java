@@ -93,13 +93,7 @@ public class BookJcrDao implements IBookJcrDAO {
     		Node root = session.getRootNode(); 
     		
     		// due to performance issue over 10k node on the same parent node.
-    		UUID uuid = UUID.randomUUID();
-    		String[] digit = uuid.toString().split("-");
-    		Node node0 = JcrUtils.getOrAddNode(root, digit[0]);
-    		Node node1 = JcrUtils.getOrAddNode(node0, digit[1]);
-    		Node node2 = JcrUtils.getOrAddNode(node1, digit[2]);
-    		Node node3 = JcrUtils.getOrAddNode(node2, digit[3]);
-    		Node node4 = JcrUtils.getOrAddNode(node3, digit[4]);
+    		Node node4 = generateUuidNode(root);
 
     		Node node = node4.addNode(sanitize(book.getTitle()));
     		node.addMixin("mix:versionable");
@@ -122,15 +116,17 @@ public class BookJcrDao implements IBookJcrDAO {
     		}
     		
     		// Store files info 
-    		for (Entry<BooksMimeType, BookData> entrySet : booksMap.entrySet()) {
-    			Node file = node.addNode(sanitize(entrySet.getValue().getFilename()),"nt:file");
-        		Node content = file.addNode("jcr:content","nt:resource");
-        		inputStream = new ByteArrayInputStream(entrySet.getValue().getBytes());
-        		Binary binary = session.getValueFactory().createBinary(inputStream);
-        		content.setProperty("jcr:data",binary);
-        		content.setProperty("jcr:mimeType", entrySet.getKey().getMimeType());
-        		content.setProperty("jcr:lastModified", Calendar.getInstance());
-			}
+    		if ( booksMap != null ) {
+	    		for (Entry<BooksMimeType, BookData> entrySet : booksMap.entrySet()) {
+	    			Node file = node.addNode(sanitize(entrySet.getValue().getFilename()),"nt:file");
+	        		Node content = file.addNode("jcr:content","nt:resource");
+	        		inputStream = new ByteArrayInputStream(entrySet.getValue().getBytes());
+	        		Binary binary = session.getValueFactory().createBinary(inputStream);
+	        		content.setProperty("jcr:data",binary);
+	        		content.setProperty("jcr:mimeType", entrySet.getKey().getMimeType());
+	        		content.setProperty("jcr:lastModified", Calendar.getInstance());
+				}
+    		}
     		
     		if ( cover != null ) {
     			Node coverNode = node.addNode("cover");
@@ -154,6 +150,19 @@ public class BookJcrDao implements IBookJcrDAO {
 		}
 		return book;
 		
+	}
+
+
+
+	private Node generateUuidNode(Node root) throws RepositoryException {
+		UUID uuid = UUID.randomUUID();
+		String[] digit = uuid.toString().split("-");
+		Node node0 = JcrUtils.getOrAddNode(root, digit[0]);
+		Node node1 = JcrUtils.getOrAddNode(node0, digit[1]);
+		Node node2 = JcrUtils.getOrAddNode(node1, digit[2]);
+		Node node3 = JcrUtils.getOrAddNode(node2, digit[3]);
+		Node node4 = JcrUtils.getOrAddNode(node3, digit[4]);
+		return node4;
 	}
 	
 
@@ -183,13 +192,9 @@ public class BookJcrDao implements IBookJcrDAO {
 			
 			if (rowIterator.hasNext() ) {
 				Node node = rowIterator.nextRow().getNode();
-				    		
+				
 				VersionManager vm = session.getWorkspace().getVersionManager();
 				vm.checkout(node.getPath());
-	
-				if (! node.getName().equals( sanitize(book.getTitle()) )) {
-					session.move(node.getPath(), node.getParent().getPath() + "/" + sanitize(book.getTitle()));
-				}
 				
 				node.addMixin("mix:versionable");
 	    		node.setProperty("id", book.getId());
@@ -234,7 +239,7 @@ public class BookJcrDao implements IBookJcrDAO {
 
 
 	@Override
-	public void updateCover(long bookId, FileData cover) throws RepositoryException, MalformedURLException {
+	public void updateCover(Book book, FileData cover) throws RepositoryException, MalformedURLException {
 
 		Repository repository = JcrUtils.getRepository(jcrUrl); 
 		Session session = repository.login( new SimpleCredentials("admin", "admin".toCharArray()));
@@ -248,7 +253,7 @@ public class BookJcrDao implements IBookJcrDAO {
     		StringBuilder expression = new StringBuilder();
     		
     		expression.append("select * from [nt:unstructured] as book ");
-    		expression.append("where book.id = "+ bookId + " ");
+    		expression.append("where book.id = "+ book.getId() + " ");
     		
     		
 			QueryManager queryMgr = session.getWorkspace().getQueryManager();

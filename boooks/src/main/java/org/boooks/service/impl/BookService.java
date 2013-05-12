@@ -107,7 +107,11 @@ public class BookService implements IBookService {
 		book = bookDAO.getById(book.getId());
 		
 		/** save the book into JCR **/
-		book = bookJcrDAO.update(book);
+		if ( bookJcrDAO.getById(book.getId()) == null ) {
+			bookJcrDAO.save(book, null, null);
+		} else {
+			bookJcrDAO.update(book);
+		}
 		
 		return book;
 	}
@@ -140,8 +144,13 @@ public class BookService implements IBookService {
 	
 	@Override
 	@Transactional(readOnly=false)
-	public void updateCover(long id, FileData coverData) throws RepositoryException, MalformedURLException {
-		bookJcrDAO.updateCover(id, coverData);
+	public void updateCover(Book book, FileData coverData) throws RepositoryException, MalformedURLException {
+		if ( bookJcrDAO.getById(book.getId()) == null ) {
+			bookJcrDAO.save(book, null, coverData);
+		} else {
+			bookJcrDAO.updateCover(book, coverData);
+		}
+		
 	}
 	
 

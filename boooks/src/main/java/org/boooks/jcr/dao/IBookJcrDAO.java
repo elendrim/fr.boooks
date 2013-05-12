@@ -18,7 +18,7 @@ public interface IBookJcrDAO {
 	
 	Book update(Book book) throws RepositoryException, MalformedURLException;
 	
-	void updateCover(long id, FileData coverData) throws RepositoryException, MalformedURLException ;
+	void updateCover(Book book, FileData coverData) throws RepositoryException, MalformedURLException ;
       
     Book getById(long id) throws RepositoryException, MalformedURLException;
 

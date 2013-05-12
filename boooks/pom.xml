@@ -4,7 +4,7 @@
     <groupId>fr.boooks</groupId>
     <artifactId>boooks-webapp</artifactId>
     <packaging>war</packaging>
-    <version>0.1</version>
+    <version>0.0.20</version>
     <name>Boooks web application</name>
     <description>Boooks web application frontend</description>
     <repositories>

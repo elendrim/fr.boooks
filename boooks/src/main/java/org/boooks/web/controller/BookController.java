@@ -360,7 +360,7 @@ public class BookController {
 			coverData.setFilename(file.getOriginalFilename());
 		}
 		
-		bookService.updateCover(bookCoverForm.getId(), coverData);
+		bookService.updateCover(book, coverData);
 		
 		model.addAttribute("id", bookCoverForm.getId());
         return "redirect:/book/view.htm";
