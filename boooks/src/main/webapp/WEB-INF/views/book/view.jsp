@@ -179,8 +179,8 @@
 			
 			<form action="comment/add.htm" name="mainCommentForm" method="post"  >
 				<input type="hidden" name="bookId" value="${book.id}" >
-			 	<textarea name="comment" class="span8" rows="3"></textarea>
-				<button class="btn" type="submit">Ajouter un commentaire</button>
+			 	<textarea name="comment" class="span8" rows="3"></textarea><br />
+				<button class="btn" type="submit">Poster votre commentaire</button> 
 			</form>
 		</c:when>
 		<c:otherwise>

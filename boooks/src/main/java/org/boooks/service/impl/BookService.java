@@ -120,24 +120,25 @@ public class BookService implements IBookService {
 	 * 5 Prix et rémunération
 	 *		
 	 *	Les prix sont fixés en fonction de la taille de l’ouvrage :
+	 *  Le nombre moyen de mots par page est de 250.
 	 *	
-	 *	- Moins de 10 pages (nouvelles et poésies) : 0,99€/$
-	 *	- Entre 11 et 50 pages : 1,99€/$
-	 *	- Entre 51 et 100 pages : 2,99€/$
-	 *	- Entre 101 et 150 pages : 3,99€/$
-	 *	- 151 pages et plus : 4,99€/$
+	 *	- Moins de 10 pages (2500 mots) (nouvelles et poésies) : 0,99€/$
+	 *	- Entre 11 et 50 pages ( 2501 à 12500 mots  ) : 1,99€/$
+	 *	- Entre 51 et 100 pages ( 12501 à 25000 mots ) : 2,99€/$
+	 *	- Entre 101 et 150 pages ( 25001 à 37500 mots ) : 3,99€/$
+	 *	- 151 pages et plus ( 37501 mots ): 4,99€/$
 	 * 
 	 */
 	private void calculPrice(Book book) {
-		if( book.getNbPage() <= 10 ) {
+		if( book.getWordCount() <= 2500 ) { 
 			book.setPrice(0.99d);
-		} else if ( book.getNbPage() > 10 && book.getNbPage() <= 50 ) {
+		} else if ( book.getWordCount() > 2500 && book.getWordCount() <= 12500 ) {
 			book.setPrice(1.99d);
-		} else if ( book.getNbPage() > 50 && book.getNbPage() <= 100 ) {
+		} else if ( book.getWordCount() > 12500 && book.getWordCount() <= 25000 ) {
 			book.setPrice(2.99d);
-		} else if ( book.getNbPage() > 100 && book.getNbPage() <= 150 ) {
+		} else if ( book.getWordCount() > 25000 && book.getWordCount() <= 37500 ) {
 			book.setPrice(3.99d);
-		} else if ( book.getNbPage() > 150  ) {
+		} else if ( book.getWordCount() > 37500  ) {
 			book.setPrice(4.99d);
 		}
 	}

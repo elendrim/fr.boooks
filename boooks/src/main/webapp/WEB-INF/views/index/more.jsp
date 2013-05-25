@@ -16,6 +16,39 @@
 			<p>Etre publié par un éditeur est un véritable parcours du combattant. Si vous sortez du carcan très rigide de l’écriture grand public, vos chances sont infimes de faire parler votre talent. 
 Saviez vous que moins de 3% des ouvrages envoyés sont édités en librairie ?</p>
 			<p>Sur Boooks, tous les talents sont les bienvenus. Vous êtes votre propre éditeur, et nous nous chargeons de vous mettre en avant sur cette plateforme.</p>
+			<p>Nous fixons le prix du livre en fonction de la taille de l'oeuvre en nombre de mots</p>
+			<table class="table table-striped">
+   				
+				 <thead>
+					<tr>
+						<th>Mots</th>
+						<th>Prix</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Moins de 2500 mots</td>
+						<td>0,99€</td>
+					</tr>
+					<tr>
+						<td>Entre 2501 et 12500 mots</td>
+						<td>1,99€</td>
+					</tr>
+					<tr>
+						<td>Entre 12501 et 25000 mots</td>
+						<td>2,99€</td>
+					</tr>
+					<tr>
+						<td>Entre 25001 et 37500 mots</td>
+						<td>3,99€</td>
+					</tr>
+					<tr>
+						<td>37501 mots et plus</td>
+						<td>4,99€</td>
+					</tr>
+				</tbody>
+    		</table>
+			
 			<p><strong>Devenez ce que vous êtes : Un écrivain !</strong></p>
 		</div>
 		<div class="span6">
@@ -35,7 +68,6 @@ Chez Boooks, nous rêvons d’un mode artistique sans limite ou chacun pourrait 
 			<form class="form-search" action="book/add.htm" method="get">
 				<button type="submit" class="btn">Publier</button>
 			</form>
-			
 		</div>
 		<div class="span6">
 			<h2>Découvrir</h2>
