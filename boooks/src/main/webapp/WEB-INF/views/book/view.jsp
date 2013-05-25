@@ -115,8 +115,12 @@
 			  
 			  <dt>Formats disponibles</dt>
 			  <dd><c:forEach items="${booksMimeTypeList}" var="type" varStatus="varStatus" ><c:if test="${varStatus.index > 0}">,</c:if> ${type}</c:forEach></dd>
-			   <dt>Nombre de page</dt>
+			  
+			  <dt>Nombre de pages</dt>
 			  <dd>${book.nbPage}</dd>
+			  
+			  <dt>Nombre de mots</dt>
+			  <dd>${book.wordCount}</dd>
 			  
 			  <dt>Prix</dt>
 			  <dd>${book.price} €</dd>

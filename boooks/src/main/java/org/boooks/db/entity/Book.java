@@ -47,6 +47,9 @@ public class Book {
 	@Column(name="NB_PAGE", nullable=false)
 	private int nbPage;
 	
+	@Column(name="WORD_COUNT", nullable=false)
+	private int wordCount;
+	
 	@Column(name="PRICE", nullable=false)
 	private double price;
 
@@ -174,6 +177,14 @@ public class Book {
 
 	public void setBuyes(List<Buy> buyes) {
 		this.buyes = buyes;
+	}
+
+	public int getWordCount() {
+		return wordCount;
+	}
+
+	public void setWordCount(int wordCount) {
+		this.wordCount = wordCount;
 	}
 
 }

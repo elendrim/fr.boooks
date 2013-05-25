@@ -42,8 +42,8 @@
 	
 	
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-		  <!-- specify maximum file size in bytes actually 20Mo -->
-		  <property name="maxUploadSize" value="20000000"/>
+		  <!-- specify maximum file size in bytes actually 70Mo -->
+		  <property name="maxUploadSize" value="70000000"/>
 	</bean>
 	
 	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>

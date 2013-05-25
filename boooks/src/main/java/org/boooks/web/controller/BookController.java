@@ -14,12 +14,12 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang.StringUtils;
 import org.boooks.db.common.BooksMimeType;
+import org.boooks.db.common.WordCounter;
 import org.boooks.db.entity.Author;
 import org.boooks.db.entity.Book;
 import org.boooks.db.entity.Buy;
 import org.boooks.db.entity.BuyPK;
 import org.boooks.db.entity.Genre;
-import org.boooks.db.entity.MainComment;
 import org.boooks.db.entity.Type;
 import org.boooks.db.entity.UserEntity;
 import org.boooks.exception.ForbiddenAccessException;
@@ -34,6 +34,7 @@ import org.boooks.service.ITypeService;
 import org.boooks.service.IUserService;
 import org.boooks.web.form.BookCoverForm;
 import org.boooks.web.form.BookForm;
+import org.boooks.web.form.MainCommentForm;
 import org.boooks.web.propertyeditor.GenreEditor;
 import org.boooks.web.propertyeditor.TypeEditor;
 import org.slf4j.Logger;
@@ -113,7 +114,7 @@ public class BookController {
 	}
 
     @RequestMapping(value="/view", method = RequestMethod.GET)
-    public String view( @RequestParam long id, ModelMap model, Principal principal) throws RepositoryException, MalformedURLException, IOException {
+    public String view(@ModelAttribute("mainCommentForm") MainCommentForm mainCommentForm, @RequestParam long id, ModelMap model, Principal principal) throws RepositoryException, MalformedURLException, IOException {
 		
     	Book book = bookService.getBookDbById(id);
     	
@@ -199,28 +200,9 @@ public class BookController {
 		
 		
 		Map<BooksMimeType, BookData> booksMap = new HashMap<BooksMimeType, BookData>();
-		if ( bookForm.getFilePdf() != null && !bookForm.getFilePdf().isEmpty() ) {
-			CommonsMultipartFile file = bookForm.getFilePdf();
-			BookData bookData = new BookData();
-			bookData.setBytes(file.getBytes());
-//			bookData.setMimeType(file.getContentType());
-			// override the file mime type, to owers
-			bookData.setMimeType(BooksMimeType.PDF.getMimeType());
-			bookData.setFilename(file.getOriginalFilename());
-			bookData.setTitle(bookForm.getTitle());
-			booksMap.put(BooksMimeType.PDF, bookData);
-		}
-		if ( bookForm.getFileEpub() != null && !bookForm.getFileEpub().isEmpty() ) {
-			CommonsMultipartFile file = bookForm.getFileEpub();
-			BookData bookData = new BookData();
-			bookData.setBytes(file.getBytes());
-//			bookData.setMimeType(file.getContentType());
-			// override the file mime type, to owers
-			bookData.setMimeType(BooksMimeType.EPUB.getMimeType());
-			bookData.setFilename(file.getOriginalFilename());
-			bookData.setTitle(bookForm.getTitle());
-			booksMap.put(BooksMimeType.EPUB, bookData);
-		}
+		
+		int wordCount = 0;
+		
 		if ( bookForm.getFileText() != null && !bookForm.getFileText().isEmpty() ) {
 			CommonsMultipartFile file = bookForm.getFileText();
 			BookData bookData = new BookData();
@@ -230,8 +212,51 @@ public class BookController {
 			bookData.setMimeType(BooksMimeType.TEXT.getMimeType());
 			bookData.setFilename(file.getOriginalFilename());
 			bookData.setTitle(bookForm.getTitle());
+			
+			wordCount = WordCounter.countWord(file.getBytes());
+			
 			booksMap.put(BooksMimeType.TEXT, bookData);
 		}
+		
+		if ( bookForm.getFileEpub() != null && !bookForm.getFileEpub().isEmpty() ) {
+			CommonsMultipartFile file = bookForm.getFileEpub();
+			BookData bookData = new BookData();
+			bookData.setBytes(file.getBytes());
+//			bookData.setMimeType(file.getContentType());
+			// override the file mime type, to owers
+			bookData.setMimeType(BooksMimeType.EPUB.getMimeType());
+			bookData.setFilename(file.getOriginalFilename());
+			bookData.setTitle(bookForm.getTitle());
+			
+			if ( wordCount == 0 ) {
+				wordCount = WordCounter.countWord(file.getBytes());
+			}
+			
+			booksMap.put(BooksMimeType.EPUB, bookData);
+		}
+		
+		if ( bookForm.getFilePdf() != null && !bookForm.getFilePdf().isEmpty() ) {
+			CommonsMultipartFile file = bookForm.getFilePdf();
+			BookData bookData = new BookData();
+			bookData.setBytes(file.getBytes());
+//			bookData.setMimeType(file.getContentType());
+			// override the file mime type, to owers
+			bookData.setMimeType(BooksMimeType.PDF.getMimeType());
+			bookData.setFilename(file.getOriginalFilename());
+			bookData.setTitle(bookForm.getTitle());
+			
+			if ( wordCount == 0 ) {
+				wordCount = WordCounter.countWord(file.getBytes());
+			}
+			
+			booksMap.put(BooksMimeType.PDF, bookData);
+		}
+		
+		
+		book.setWordCount(wordCount);
+		
+		
+		
 		FileData coverData = null;
 		if ( bookForm.getFileCover() != null && !bookForm.getFileCover().isEmpty() ) {
 			CommonsMultipartFile file = bookForm.getFileCover();
