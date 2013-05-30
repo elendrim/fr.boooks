@@ -17,7 +17,7 @@
 					<img class="media-object" src="http://www.gravatar.com/avatar/${util:md5(mainComment.user.email)}.jpg?s=50r=g&d=identicon" />
 				</a>
 				<div class="media-body">
-					${mainComment.text}
+					${fn:escapeXml(mainComment.text)}
 					<blockquote>
 						<span class="muted">${mainComment.user.firstname} ${mainComment.user.lastname}
 						– <fmt:formatDate	value="${mainComment.modifDate}" pattern="dd MMMMM yyyy HH:mm:ss" />
